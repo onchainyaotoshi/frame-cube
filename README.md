@@ -1,2 +1,2 @@
 # frame-cube
-A 3x3x3 Rubik's Cube on a Farcaster frame.
+Rubic's cube 3x3x3 for farcaster frame

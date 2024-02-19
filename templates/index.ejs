@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title><%= title %></title>
+
+      <meta property="fc:frame" content="vNext" />
+      <meta property="fc:frame:image" content="<%= image %>" />
+      <meta property="og:image" content="<%= image %>">
+
+      <% if(typeof postUrl !== 'undefined') { %>
+        <meta property="fc:frame:post_url" content="<%= postUrl %>" />
+      <% } %>
+
+      <% if(typeof input !== 'undefined') { %>
+        <% if(input.placeholder) { %>
+          <meta property="fc:frame:input:text" content="<%= input.placeholder %>"/>
+        <% } %>
+      <% } %>
+      
+      <% if(typeof buttons !== 'undefined' && buttons.length > 0) { %>
+        <% buttons.forEach(function(button, index) { %>
+          <% if(button.text) { %>
+            <meta property="fc:frame:button:<%= index + 1 %>" content="<%= button.text %>" />
+          <% } %>
+
+          <% if(button.action) { %>
+            <meta property="fc:frame:button:<%= index + 1 %>:action" content="<%= button.action %>" />
+          <% } %>
+
+          <% if(button.target) { %>
+            <meta property="fc:frame:button:<%= index + 1 %>:target" content="<%= button.target %>" />
+          <% } %>
+
+        <% }); %>
+      <% } %>
+      
+    </head>
+    <body>
+      <h1><%= title %></h1>
+    </body>
+</html>
