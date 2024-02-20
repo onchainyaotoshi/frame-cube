@@ -1,41 +1,4 @@
-// Import the CubeState class
-import CubeState, {MOVES} from './CubeState.js'; // Adjust the path as necessary
-
-// describe('CubeState Class Tests', () => {
-//     test('Solved Cube Initialization', () => {
-//         const cube = new CubeState();
-//         expect(cube.isSolved()).toBe(true);
-//     });
-
-//     test('Scramble and IsSolved Method', () => {
-//         const cube = new CubeState();
-//         cube.scramble(20);
-//         expect(cube.isSolved()).toBe(false);
-//     });
-
-//     test('toString and fromString Static Method', () => {
-//         const cube = new CubeState();
-//         cube.scramble(20);
-//         const cubeString = cube.toString();
-
-//         const newCube = CubeState.fromString(cubeString);
-//         expect(newCube.toString()).toBe(cubeString);
-//     });
-
-//     test('Rotation Methods Preserve Cube Integrity', () => {
-//         const cube = new CubeState();
-        
-//         // Apply each move in both directions and check if the cube remains unsolved
-//         MOVES.forEach(move => {
-//             const newCube = new CubeState(cube.state); // Create a new cube for each test to avoid cumulative effects
-//             newCube.rotateFaceByCode(move, true); // Clockwise
-//             expect(newCube.isSolved()).toBe(false);
-
-//             newCube.rotateFaceByCode(move, false); // Counter-Clockwise (should revert to solved state)
-//             expect(newCube.isSolved()).toBe(true);
-//         });
-//     });
-// });
+import CubeState from './CubeState.js';
 
 describe('CubeState Move Effects', () => {
     let cube;

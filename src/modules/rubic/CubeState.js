@@ -16,15 +16,6 @@ export const MOVES = [
 class CubeState {
      // Initialize the CubeState with an optional initialState or generate a new solved state
      constructor(initialState = null) {
-        // Mapping of color codes to their respective hex values for easy reference
-        this.colorMap = {
-            'R': 0xff0000, // Red
-            'G': 0x00ff00, // Green
-            'B': 0x0000ff, // Blue
-            'O': 0xffa500, // Orange
-            'Y': 0xffff00, // Yellow
-            'W': 0xffffff  // White
-        };
         // List of color codes used in the cube
         this.colors = ['R','G','O','B','W', 'Y'];
         // Cube state represented as a 2D array for each face

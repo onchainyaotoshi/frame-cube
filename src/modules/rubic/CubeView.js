@@ -25,7 +25,7 @@ class CubeView {
     const height = Math.round(800 / 1.91); // Example dimensions, adjust as needed
     const webGLContext  = createGL(width, height); // Adjusted width and height for the desired aspect ratio
 
-    // Define a dummy canvas with minimal stub functions
+    // this dummy is required to prevent WebGLRenderer throw errors, since nodejs doesn't fully support canvas
     const dummyCanvas = {
       width: width,
       height: height,
@@ -56,12 +56,12 @@ class CubeView {
     for (let x = 0; x < 3; x++) {
       for (let y = 0; y < 3; y++) {
         for (let z = 0; z < 3; z++) {
-          if (x === 2 || y === 2 || z === 2) { // Only right, top, and front faces
+          if (x === 2 || y === 2 || z === 2) { // Only right, up, and front faces
             const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             const faceMaterials = [
               new THREE.MeshBasicMaterial({ color: this.getColor('right', x, y, z) }), // Right face
               new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }), // Left face (hidden)
-              new THREE.MeshBasicMaterial({ color: this.getColor('top', x, y, z) }), // Top face
+              new THREE.MeshBasicMaterial({ color: this.getColor('up', x, y, z) }), // Top face
               new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }), // Bottom face (hidden)
               new THREE.MeshBasicMaterial({ color: this.getColor('front', x, y, z) }), // Front face
               new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }), // Back face (hidden)
@@ -82,14 +82,14 @@ class CubeView {
 
     // Create grids for hidden faces
     this.createGrid('left', -cubeSize * 3 - spacing * 36, 0, 0);
-    this.createGrid('bottom',0, -cubeSize * 3 - spacing * 36, 0);
+    this.createGrid('down',0, -cubeSize * 3 - spacing * 36, 0);
     this.createGrid('back',0, 0, -cubeSize * 7 - spacing * 2);
   }
 
   getColor(face, x, y, z) {
     // Determine color based on position and state
     if (face === 'right' && x === 2) return this.colorMap[this.state[face][y][z]];
-    if (face === 'top' && y === 2) return this.colorMap[this.state[face][x][z]];
+    if (face === 'up' && y === 2) return this.colorMap[this.state[face][x][z]];
     if (face === 'front' && z === 2) return this.colorMap[this.state[face][y][x]];
     return 0x000000; // Default color if not specified
   }
@@ -118,7 +118,7 @@ class CubeView {
           case "left":
             gridGroup.rotation.y = Math.PI / 2;
             break;
-          case "bottom":
+          case "down":
             gridGroup.rotation.x = -Math.PI / 2;
             break;
           case "back":
@@ -162,7 +162,7 @@ class CubeView {
       // Copy the pixel data into the PNG object
       png.data = Buffer.from(pixels);
 
-      // Reverse the pixel rows because WebGL's readPixels reads from the bottom left
+      // Reverse the pixel rows because WebGL's readPixels reads from the down left
       for (let y = 0; y < png.height / 2; y++) {
         for (let x = 0; x < png.width; x++) {
           for (let i = 0; i < 4; i++) {
