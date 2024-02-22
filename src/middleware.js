@@ -15,6 +15,7 @@ export const validateFramePost = async (req, res, next) => {
             res.status(400).json({ error: 'Invalid data provided' }); // Data is invalid
         }
     } catch (error) {
+        console.error(error);
         // Handle errors from the async validation function
         res.status(500).json({ error: error.message }); // Internal server error or custom error message
     }
