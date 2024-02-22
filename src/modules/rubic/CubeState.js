@@ -10,7 +10,7 @@ export const MOVES = [
     'D',//down
     'M',//This refers to the rotation of the middle layer parallel to the L (Left) and R (Right) faces
     'E',//This refers to the rotation of the equatorial layer that is parallel to the U (Up) and D (Down) faces
-    'S' //This refers to the rotation of the layer between the F (Front) and B (Back) faces
+    'S' //This refers to the rotation of the standing layer between the F (Front) and B (Back) faces
 ]; // Possible moves
 
 class CubeState {

@@ -58,7 +58,6 @@ class CubeView {
               new THREE.MeshBasicMaterial(this.mapper.get3d('right', x, y, z)), // Right face
               new THREE.MeshBasicMaterial(this.mapper.meshMaterialEmptyStyle), // Left face (hidden)
               new THREE.MeshBasicMaterial(y == 2 ? this.mapper.get3d('up', x, y, z) : this.mapper.meshMaterialEmptyStyle), // Top face
-              // new THREE.MeshBasicMaterial(this.mapper.get3d('up', x, y, z) ), // Up face
               new THREE.MeshBasicMaterial(this.mapper.meshMaterialEmptyStyle), // Bottom face (hidden)
               new THREE.MeshBasicMaterial(this.mapper.get3d('front', x, y, z)), // Front face
               new THREE.MeshBasicMaterial(this.mapper.meshMaterialEmptyStyle), // Back face (hidden)

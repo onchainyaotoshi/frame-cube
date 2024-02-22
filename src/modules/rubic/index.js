@@ -53,8 +53,6 @@ router.post("/:id", (req, res) => {
       cubeView = new CubeView(cubeState.state);
     }
 
-    console.log(cubeView.state);
-
     res.render('index', {
       title: "Rubic's pages",
       image: `data:image/png;base64,${cubeView.renderToPNG().toString('base64')}`,
