@@ -1,6 +1,8 @@
 import express from 'express';
+import {validateFramePost} from "../middleware.js";
+
 const router = express.Router({ mergeParams: true });
-router.get("/", (req, res) => {
+router.get("/", validateFramePost,(req, res) => {
   res.render('index', {
     title: "Rubic's Cube",
     image: `${process.env.FC_DOMAIN}/images/main.png`,

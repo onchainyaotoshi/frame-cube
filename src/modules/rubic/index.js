@@ -1,24 +1,38 @@
 import CubeView from './CubeView.js'; // Adjust the path accordingly
 import CubeState from './CubeState.js';
-
+import {validateFramePost} from "../../middleware.js";
 import express from 'express';
+import * as table from '../../database.js';
 
-let cubeState;
-let cubeView;
 
 const router = express.Router({ mergeParams: true });
-router.post("/:id", (req, res) => {
+router.post("/:id", validateFramePost, async (req, res) => {
     const { id } = req.params;
-    const {untrustedData} = req.body;
-    const {buttonIndex, inputText} = untrustedData;
-
+    
+    let cubeState;
+    let cubeView;
     if(id == 0){
-      cubeState = new CubeState()
-      cubeView = new CubeView(cubeState.state);
+      const current_state = await table.checkOngoingGameByFid(req.fid);
+      if(current_state === false){
+        cubeState = new CubeState()
+        cubeState.scramble()
+        cubeView = new CubeView(cubeState.state);
+        await table.insertGame({
+          fid:req.fid,
+          current_state:cubeState.toString(),
+          start:req.action.timestamp
+        });
+      }else{
+        //load ongoing game
+        cubeView = new CubeView(CubeState.fromString(current_state));
+      }
     }else{
       const faceCode = inputText.trim().split(" ").map(v=>v.trim());
       if(faceCode.includes("reset")){
-
+        cubeState = new CubeState();
+        cubeState.scramble();
+        cubeView = new CubeView(cubeState.state);
+        await table.updateStartAndStateByFid(req.fid,req.action.timestamp);
       }else{
         faceCode.map(code=>{
           switch (code) {
@@ -84,9 +98,9 @@ router.post("/:id", (req, res) => {
               break;
           }
         });
+        await table.updateCurrentStateByFid(req.fid,cubeState.toString());
+        cubeView = new CubeView(cubeState.state);
       }
-      
-      cubeView = new CubeView(cubeState.state);
     }
 
     res.render('index', {

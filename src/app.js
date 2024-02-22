@@ -4,6 +4,9 @@ const {__dirname,getModulePath} = getPathInfo(import.meta.url);
 import express from 'express';
 import path from 'path';
 import 'dotenv/config';
+import neynar from "./neynar.js";
+import {createRubikGameTable} from "./database.js";
+createRubikGameTable();
 
 export const loadModule = async (filename) => {
     const module = await import(path.join(path.dirname(new URL(import.meta.url).href), process.env.FC_MODULE_DIRNAME, ...filename));
@@ -17,6 +20,7 @@ app.set('views', getModulePath('templates'));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use(express.json());
+app.use(neynar);
 
 // Error handling middleware
 const errorHandler = (err, req, res, next) => {

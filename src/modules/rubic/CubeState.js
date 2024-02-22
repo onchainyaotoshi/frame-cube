@@ -50,7 +50,7 @@ class CubeState {
     }
 
     // Scramble the cube with a specified number of random moves
-    scramble(numMoves) {
+    scramble(numMoves = 20) {
         const moveCount = MOVES.length;
 
         let scrambleMoves = '';
