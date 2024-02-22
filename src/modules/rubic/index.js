@@ -116,7 +116,10 @@ router.post("/:id", validateFramePost, async (req, res) => {
         image: `data:image/png;base64,${cubeView.renderToPNG().toString('base64')}`,
         postUrl: `${process.env.FC_DOMAIN}/rubic/1`,
         buttons: [
-          { text: "run"}
+          { text: "Run"},
+          { text: "Leaderboard"},
+          { text: "Guide"},
+          { text: "Source", action: "link", target: "https://replit.com/@onchainyaotoshi/Nodejs"}
         ],
         input: {placeholder: "Commands"}
       });
