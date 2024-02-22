@@ -1,28 +1,24 @@
 import * as THREE from 'three';
 import createGL  from 'gl';
 import { PNG } from 'pngjs';
+import CubeStateToView from "./CubeStateToView.js";
+import { createCanvas } from 'canvas';
 
 class CubeView {
   constructor( state) {
     this.state = state;
-    this.colorMap = {
-      'R': 0xff0000, // Red
-      'G': 0x00ff00, // Green
-      'B': 0x0000ff, // Blue
-      'O': 0xffa500, // Orange
-      'Y': 0xffff00, // Yellow
-      'W': 0xffffff  // White
-    };
+    this.mapper = new CubeStateToView(state);
     this.initScene();
     this.createCubes();
     this.addLighting();
+    this.addGridlines3D();
     this.render();
   }
 
   initScene() {
     // Create a headless WebGL context using the 'gl' package
-    const width = 800;
-    const height = Math.round(800 / 1.91); // Example dimensions, adjust as needed
+    const width = 1000;
+    const height = Math.round(1000 / 1.91); // Example dimensions, adjust as needed
     const webGLContext  = createGL(width, height); // Adjusted width and height for the desired aspect ratio
 
     // this dummy is required to prevent WebGLRenderer throw errors, since nodejs doesn't fully support canvas
@@ -51,20 +47,21 @@ class CubeView {
     const cubeSize = 1;
     const spacing = 0.1;
     this.group3D = new THREE.Group();
-
-    // Create 3D cubes for visible sides
+    // Create 3D cubes for visible sides 
+    // order: back to front, down to up, left to right
     for (let x = 0; x < 3; x++) {
       for (let y = 0; y < 3; y++) {
         for (let z = 0; z < 3; z++) {
           if (x === 2 || y === 2 || z === 2) { // Only right, up, and front faces
             const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             const faceMaterials = [
-              new THREE.MeshBasicMaterial({ color: this.getColor('right', x, y, z) }), // Right face
-              new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }), // Left face (hidden)
-              new THREE.MeshBasicMaterial({ color: this.getColor('up', x, y, z) }), // Top face
-              new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }), // Bottom face (hidden)
-              new THREE.MeshBasicMaterial({ color: this.getColor('front', x, y, z) }), // Front face
-              new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }), // Back face (hidden)
+              new THREE.MeshBasicMaterial(this.mapper.get3d('right', x, y, z)), // Right face
+              new THREE.MeshBasicMaterial(this.mapper.meshMaterialEmptyStyle), // Left face (hidden)
+              new THREE.MeshBasicMaterial(y == 2 ? this.mapper.get3d('up', x, y, z) : this.mapper.meshMaterialEmptyStyle), // Top face
+              // new THREE.MeshBasicMaterial(this.mapper.get3d('up', x, y, z) ), // Up face
+              new THREE.MeshBasicMaterial(this.mapper.meshMaterialEmptyStyle), // Bottom face (hidden)
+              new THREE.MeshBasicMaterial(this.mapper.get3d('front', x, y, z)), // Front face
+              new THREE.MeshBasicMaterial(this.mapper.meshMaterialEmptyStyle), // Back face (hidden)
             ];
             const cube = new THREE.Mesh(cubeGeometry, faceMaterials);
             cube.position.set(
@@ -86,14 +83,6 @@ class CubeView {
     this.createGrid('back',0, 0, -cubeSize * 7 - spacing * 2);
   }
 
-  getColor(face, x, y, z) {
-    // Determine color based on position and state
-    if (face === 'right' && x === 2) return this.colorMap[this.state[face][y][z]];
-    if (face === 'up' && y === 2) return this.colorMap[this.state[face][x][z]];
-    if (face === 'front' && z === 2) return this.colorMap[this.state[face][y][x]];
-    return 0x000000; // Default color if not specified
-  }
-
   createGrid(face, xOffset, yOffset, zOffset) {
     const cubeSize = 1;
     const spacing = 0.1;
@@ -102,8 +91,7 @@ class CubeView {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize * 0.1); // Thin cubes for the grid
-        const color = this.colorMap[this.state[face][i][j]];
-        const cubeMaterial = new THREE.MeshBasicMaterial({ color: color });
+        const cubeMaterial = new THREE.MeshBasicMaterial(this.mapper.get2d(face,i,j));
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.position.set(
             (i - 1) * (cubeSize + spacing),
@@ -135,6 +123,40 @@ class CubeView {
   addLighting() {
     const ambientLight = new THREE.AmbientLight(0x404040);
     this.scene.add(ambientLight);
+  }
+
+  createTextSprite(message, color) {
+    const canvas = createCanvas(128, 64); // Create a canvas with node-canvas
+    const context = canvas.getContext('2d');
+
+    context.fillStyle = color;
+    context.font = 'Bold 48px Arial';
+    context.textAlign = 'center';
+    context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+    // Convert canvas to an Image object
+    const image = new THREE.CanvasTexture(canvas);
+
+    const spriteMaterial = new THREE.SpriteMaterial({ map: image });
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(1, 0.5, 1);
+
+    return sprite;
+  }
+
+  addGridlines3D(){
+    const axesHelper = new THREE.AxesHelper(4.8); // The parameter defines the size of the lines representing the axes.
+   
+    const xAxisLabel = this.createTextSprite('X', 'red');
+    xAxisLabel.position.set(5, 0, 0);
+  
+    const yAxisLabel = this.createTextSprite('Y', 'green');
+    yAxisLabel.position.set(0, 5, 0);
+  
+    const zAxisLabel = this.createTextSprite('Z', 'blue');
+    zAxisLabel.position.set(0, 0, 5);
+    
+    this.scene.add(axesHelper,xAxisLabel,yAxisLabel,zAxisLabel);
   }
 
   render() {
