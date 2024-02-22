@@ -1,5 +1,6 @@
 # frame-cube
-Rubic's cube 3x3x3 for farcaster frame
+
+The 3x3x3 Rubik's Cube is designed for a Farcaster frame.
 
 # Rubik's Cube Notation Guide
 
