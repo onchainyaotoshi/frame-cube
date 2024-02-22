@@ -1,47 +1,53 @@
 import CubeView from './CubeView.js'; // Adjust the path accordingly
 import CubeState from './CubeState.js';
-import {validateFramePost} from "../../middleware.js";
+import { validateFramePost } from "../../middleware.js";
 import express from 'express';
 import * as table from '../../database.js';
 
-
 const router = express.Router({ mergeParams: true });
-router.post("/:id", validateFramePost, async (req, res) => {
-    try{
+router.post("/:id", validateFramePost, (req, res) => {
+  Rubic(req, res);
+});
 
-      const { id } = req.params;
-    
-      let cubeState;
-      let cubeView;
-      const current_state = await table.checkOngoingGameByFid(req.fid);
-      if(id == 0){
-        if(current_state === null){
+export default router;
+
+export const Rubic = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    let cubeState;
+    let cubeView;
+    const current_state = await table.checkOngoingGameByFid(req.fid);
+    if (id == 0 || id == 1) {
+      if (id == 0) {
+        if (current_state === null) {
           cubeState = new CubeState()
-          cubeState.scramble()
+          cubeState.scramble(1)
           cubeView = new CubeView(cubeState.state);
           await table.insertGame({
-            fid:req.fid,
-            current_state:cubeState.toString(),
-            start:req.action.timestamp
+            fid: req.fid,
+            current_state: cubeState.toString(),
+            start: req.action.timestamp
           });
-        }else{
+        } else {
           //load ongoing game
           cubeState = CubeState.fromString(current_state);
           cubeView = new CubeView(cubeState.state);
         }
-      }else{
-        if(req.action.tapped_button.index === 1){
+      } else {
+        if (req.action.tapped_button.index === 1) {
           //load ongoing game
           cubeState = CubeState.fromString(current_state);
           cubeView = new CubeView(cubeState.state);
-          const faceCode = req.action.input.text.trim().split(" ").map(v=>v.trim());
-          if(faceCode.includes("reset")){
+          const faceCode = req.action.input.text.trim().split(" ").map(v => v.trim());
+          if (faceCode.includes("reset")) {
             cubeState = new CubeState();
             cubeState.scramble();
             cubeView = new CubeView(cubeState.state);
-            await table.updateStartAndStateByFid(req.fid,req.action.timestamp,cubeState.toString());
-          }else{
-            faceCode.map(code=>{
+            await table.updateStartAndStateByFid(req.fid, req.action.timestamp, cubeState.toString());
+          } else {
+            faceCode.map(code => {
               switch (code) {
                 case 'u':
                 case 'U':
@@ -105,30 +111,85 @@ router.post("/:id", validateFramePost, async (req, res) => {
                   break;
               }
             });
-            await table.updateCurrentStateByFid(req.fid,cubeState.toString());
+            await table.updateCurrentStateByFid(req.fid, cubeState.toString());
             cubeView = new CubeView(cubeState.state);
           }
         }
       }
-  
-      res.render('index', {
+
+      let buttons = [
+        { text: "Run" },
+        { text: "Leaderboard" },
+        { text: "Guide", action:"link", target:"https://github.com/onchainyaotoshi/frame-cube?tab=readme-ov-file"}
+      ];
+
+      let postUrl = `${process.env.FC_DOMAIN}/rubic/1`;
+
+      let input = { placeholder: "Commands" };
+
+      if (cubeState.isSolved()) {
+        postUrl = `${process.env.FC_DOMAIN}/rubic/2`;
+        await table.finish(req.fid, req.action.timestamp);
+        buttons = [
+          {
+            text: 'Claim Reward'
+          }
+        ];
+        input = undefined;
+      }
+
+      let frame = {
         title: "Rubic's pages",
         image: `data:image/png;base64,${cubeView.renderToPNG().toString('base64')}`,
-        postUrl: `${process.env.FC_DOMAIN}/rubic/1`,
-        buttons: [
-          { text: "Run"},
-          { text: "Leaderboard"},
-          { text: "Guide"},
-          { text: "Source", action: "link", target: "https://replit.com/@onchainyaotoshi/Nodejs"}
-        ],
-        input: {placeholder: "Commands"}
-      });
-    }catch(error){
-        console.log(error);
-        res.status(500).json({ error: error.message }); // Internal server error or custom error message
+        postUrl: postUrl,
+        buttons: buttons,
+        input: input
+      }
+
+      return res.render('index', frame);
+    } else if (id == 2) {
+      const isClaimed = await table.isRewardClaimed(req.fid);
+      // console.log("isClaimed", isClaimed);
+      if (!isClaimed) {
+        const { trustedData } = req.body;
+        const result = await req.client.validateFrameAction(trustedData.messageBytes);
+        if (result.valid) {
+          const to = result.action.interactor.custody_address;
+
+          //By given tx_hash = 0, to prevent multiple claim attacks.
+          const recordId = await table.updateAddressAndTxHash(req.fid, to, "0");
+          req.wallet.sendErc20(req.isLive() ? (Math.round(Math.random()) === 0 ? "frame" : "toshi") : "test", to, "1");
+
+          // const txHash = await req.wallet.sendErc20("test", to, "1");
+          // table.updateGame(recordId, { tx_hash: txHash });
+
+          return res.render('index', {
+            title: "Rubic's Cube",
+            image: await req.textToDataUri("Initiate a reward claim request."),
+            postUrl: `${process.env.FC_DOMAIN}/rubic/0`,
+            buttons: [
+              { text: "Play Again" },
+              { text: "Transactions", action: "link", target: `${process.env.NETWORK_EXPLORER}/address/${process.env.WALLET_ADDRESS}` }
+            ]
+          });
+        } else {
+          res.status(400).json({ error: 'Invalid data provided' }); // Data is invalid
+        }
+      } else {
+        return res.render('index', {
+          title: "Rubic's Cube",
+          image: await req.textToDataUri("You've claimed your reward, one per wallet."),
+          postUrl: `${process.env.FC_DOMAIN}/rubic/0`,
+          buttons: [
+            { text: "Play Again" },
+          ]
+        });
+      }
+    } else {
+      return res.status(400).json({ error: 'id invalid' }); // Data is invalid
     }
-});
-
-
-
-export default router;
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error }); // Internal server error or custom error message
+  }
+}

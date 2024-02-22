@@ -15,6 +15,9 @@ export const createRubikGameTable = async () => {
             table.timestamp('start', { useTz: true }).notNullable();
             table.timestamp('end', { useTz: true });
             table.string('current_state'); // No default value
+            table.string('address');
+            table.string('tx_hash');
+            table.string('message');
           });
       console.log('Table rubik_game created');
     } else {
@@ -63,7 +66,50 @@ export const  updateStartAndStateByFid = async (fid, newStart, newState) => {
       .update({ start: newStart, current_state: newState });
   };
 
+  export const  finish = async (fid, end) => {
+    await db('rubik_game')
+      .where({ fid, end: null })
+      .update({ end: end });
+  };
+
   export const checkOngoingGameByFid = async (fid) => {
     const game = await db('rubik_game').where({ fid, end: null }).select('current_state').first();
     return game ? game.current_state : null; // Returns current_state if a game exists, null otherwise
   };
+
+  export const isRewardClaimed = async (fid) => {
+    const game = await db('rubik_game')
+      .where({ fid })
+      .whereNotNull('tx_hash')
+      .whereNotNull('end')
+      .first();
+  
+    return !!game; // Returns true if such a game exists, false otherwise
+  };
+  
+  export const updateAddressAndTxHash = async (fid, address, txHash) => {
+    try {
+      const record = await db('rubik_game')
+        .where({ fid, address: null, tx_hash:null })
+        .whereNotNull('end')
+        .first()
+  
+      if(record){
+          await db('rubik_game')
+          .where({ id: record.id }) // Use the fetched ID for updating
+          .update({
+            address: address,
+            tx_hash: txHash
+          });
+
+        return record.id; // Return the ID of the updated record
+      } else {
+        console.log('No matching record found for update');
+        return null; // Return null if no record was found to update
+      }
+    } catch (error) {
+      console.error('Error updating address and transaction hash:', error);
+      return false; // In case of error, return false
+    }
+  };
+

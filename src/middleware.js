@@ -1,18 +1,29 @@
 export const validateFramePost = async (req, res, next) => {
-    const { trustedData } = req.body;
+    const { trustedData, untrustedData } = req.body;
+    let result;
+
     try {
-        // Wait for the async validation function to complete
-        const result = await req.client.validateFrameAction(trustedData.messageBytes);
-        if (result.valid) {
-            req.payload = result; // Attach validated data to the req object
-            req.fid = result.action.interactor.fid;
-            req.wallet = result.action.interactor.custody_address;
-            req.interactor = result.action.interactor;
-            req.action = result.action;
-            
-            next(); // Proceed to the next middleware/route handler
-        } else {
-            res.status(400).json({ error: 'Invalid data provided' }); // Data is invalid
+        //since farcaster required post response in 5 seconds, sometimes not validate is a wise move.
+        if(process.env.NEYNAR_SECURED == "1"){
+            // Wait for the async validation function to complete
+            result = await req.client.validateFrameAction(trustedData.messageBytes);
+            if (result.valid) {
+                req.fid = result.action.interactor.fid;
+                req.action = result.action;
+                
+                next(); // Proceed to the next middleware/route handler
+            } else {
+                res.status(400).json({ error: 'Invalid data provided' }); // Data is invalid
+            }
+        }else{
+            req.fid = untrustedData.fid;
+            req.action = {
+                timestamp: (new Date(untrustedData.timestamp)).toISOString(),
+                tapped_button: { index: untrustedData.buttonIndex},
+                input: {text: untrustedData.inputText}
+            }
+
+            next();
         }
     } catch (error) {
         console.error(error);
