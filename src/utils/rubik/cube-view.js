@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import createGL  from 'gl';
 import { PNG } from 'pngjs';
-import CubeStateToView from "./CubeStateToView.js";
+import CubeStateToView from '@utils/rubik/cube-state-to-view.js';
 import { createCanvas } from 'canvas';
 
 class CubeView {
@@ -129,7 +129,7 @@ class CubeView {
     const context = canvas.getContext('2d');
 
     context.fillStyle = color;
-    context.font = 'Bold 48px Arial';
+    context.font = 'Bold 32px Arial';
     context.textAlign = 'center';
     context.fillText(message, canvas.width / 2, canvas.height / 2);
 
@@ -201,6 +201,10 @@ class CubeView {
 
       // Here you can save the buffer to a file, return it, or handle it as needed
       return buffer;
+  }
+
+  renderToBase64(){
+    return `data:image/png;base64,${this.renderToPNG().toString('base64')}`;
   }
 }
 

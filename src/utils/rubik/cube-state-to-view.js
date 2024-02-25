@@ -1,5 +1,7 @@
 
-
+/**
+ * cube-view that using three.js orders: back to front, down to up
+ */
 class CubeStateToView {
     constructor(state, meshMaterialEmptyColor = 0x000000) {
         this.state = state;
@@ -179,23 +181,23 @@ class CubeStateToView {
             "00": [
                 { color: this.colorMap[this.state["left"][2][2]] },
                 { color: this.colorMap[this.state["down"][0][0]] },
-                { color: this.colorMap[this.state["back"][0][0]] },
+                { color: this.colorMap[this.state["back"][2][2]] },
             ],
             "01": [
                 { color: this.colorMap[this.state["left"][1][2]] },
                 { color: this.colorMap[this.state["down"][1][0]] },
-                { color: this.colorMap[this.state["back"][1][0]] },
+                { color: this.colorMap[this.state["back"][1][2]] },
             ],
             "02": [
                 { color: this.colorMap[this.state["left"][0][2]] },
                 { color: this.colorMap[this.state["down"][2][0]] },
-                { color: this.colorMap[this.state["back"][2][0]] },
+                { color: this.colorMap[this.state["back"][0][2]] },
             ],
 
             "10": [
                 { color: this.colorMap[this.state["left"][2][1]] },
                 { color: this.colorMap[this.state["down"][0][1]] },
-                { color: this.colorMap[this.state["back"][0][1]] },
+                { color: this.colorMap[this.state["back"][2][1]] },
             ],
             "11": [
                 { color: this.colorMap[this.state["left"][1][1]] },
@@ -205,23 +207,23 @@ class CubeStateToView {
             "12": [
                 { color: this.colorMap[this.state["left"][0][1]] },
                 { color: this.colorMap[this.state["down"][2][1]] },
-                { color: this.colorMap[this.state["back"][2][1]] },
+                { color: this.colorMap[this.state["back"][0][1]] },
             ],
 
             "20": [
                 { color: this.colorMap[this.state["left"][2][0]] },
                 { color: this.colorMap[this.state["down"][0][2]] },
-                { color: this.colorMap[this.state["back"][0][2]] },
+                { color: this.colorMap[this.state["back"][2][0]] },
             ],
             "21": [
                 { color: this.colorMap[this.state["left"][1][0]] },
                 { color: this.colorMap[this.state["down"][1][2]] },
-                { color: this.colorMap[this.state["back"][1][2]] },
+                { color: this.colorMap[this.state["back"][1][0]] },
             ],
             "22": [
                 { color: this.colorMap[this.state["left"][0][0]] },
                 { color: this.colorMap[this.state["down"][2][2]] },
-                { color: this.colorMap[this.state["back"][2][2]] },
+                { color: this.colorMap[this.state["back"][0][0]] },
             ],
         }
     }

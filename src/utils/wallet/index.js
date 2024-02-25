@@ -3,9 +3,9 @@ import { Core } from '@quicknode/sdk';
 import { baseSepolia } from 'viem/chains'; // Change the network as needed
 import { createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import frame from './abi/frame.json' assert { type: 'json' };
-import toshi from './abi/toshi.json' assert { type: 'json' };
-import test from './abi/test.json' assert { type: 'json' };
+import frame from '@utils/wallet/abi/frame.json' assert { type: 'json' };
+import toshi from '@utils/wallet/abi/toshi.json' assert { type: 'json' };
+import test from '@utils/wallet/abi/test.json' assert { type: 'json' };
 
 const SMART_CONTRACT = {
     "test": { abi: test, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54' },
@@ -14,25 +14,25 @@ const SMART_CONTRACT = {
 };
 
 // Define your private key
-const privateKey = '0x' + process.env.PRIVATE_KEY;
+const privateKey = '0x' + process.env.FC_WALLET_PRIVATE_KEY;
 
 // Convert the private key to an account object
 const account = privateKeyToAccount(privateKey);
 
 // Initialize the clients
 const core = new Core({
-    endpointUrl: process.env.QUICKNODE_HTTPS_URL,
+    endpointUrl: process.env.FC_QUICKNODE_HTTPS_URL,
 });
 
 const walletClient = createWalletClient({ account, chain: baseSepolia, transport: http(core.endpointUrl) });
 
-const sendEth = async (to, amount) => {
+export const sendEth = async (to, amount) => {
     if (typeof amount != 'string') {
         throw new Error('amount must be a string');
     }
 
-    const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_HTTPS_URL);
-    const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+    const provider = new ethers.JsonRpcProvider(process.env.FC_QUICKNODE_HTTPS_URL);
+    const signer = new ethers.Wallet(process.env.FC_WALLET_PRIVATE_KEY, provider);
 
     const tx = await signer.sendTransaction({
         to: to,
@@ -42,7 +42,7 @@ const sendEth = async (to, amount) => {
     return tx.hash;
 }
 
-const sendErc20 = async (token, to, amount) => {
+export const sendErc20 = async (token, to, amount) => {
     if (typeof amount != 'string') {
         throw new Error('amount must be a string');
     }
@@ -55,13 +55,4 @@ const sendErc20 = async (token, to, amount) => {
     });
 
     return await walletClient.writeContract(request);
-}
-
-export default (req, res, next) => {
-    // Attach the utility function to the request object
-    req.wallet = {
-        sendEth,sendErc20
-    };
-
-    next(); // Move to the next middleware or route handler
 }
