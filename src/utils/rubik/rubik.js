@@ -5,11 +5,19 @@ export default class Rubik{
     constructor(state,totalScrambleMove) {
         if(typeof state === "string"){
             this.state = CubeState.fromString(state);
+        }else if(Array.isArray(state)){
+            this.state = CubeState(state);
         }else{
             this.state = new CubeState();
             this.state.scramble(totalScrambleMove);
         }
-        
-        this.view = new CubeView(this.state.state);
+    }
+
+    renderToBase64(){
+        return (new CubeView(this.state.state)).renderToBase64();
+    }
+
+    renderToPNG(){
+        return (new CubeView(this.state.state)).renderToPNG();
     }
 }

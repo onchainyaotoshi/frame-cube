@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import CubeMoveActions from '@utils/rubik/cube-move-actions.js';
 
 export const FACES = ['front', 'left', 'back', 'right', 'up', 'down'];
+export const FACES_COLOR = ['B','O','G','R','Y', 'W'];
 export const MOVES = [
     'F',//front
     'L',//left
@@ -29,9 +29,6 @@ LLL FFF RRR BBB
 class CubeState {
      // Initialize the CubeState with an optional initialState or generate a new solved state
      constructor(initialState = null) {
-        // List of color codes used in the cube
-        this.colors = ['R','G','O','B','W', 'Y'];
-        // Cube state represented as a 2D array for each face
 
         if(initialState != null){
             this.state = initialState;
@@ -46,7 +43,7 @@ class CubeState {
     // Generate a solved initial state with each face having a uniform color
     generateInitialState() {
         let state = {};
-        this.colors.forEach((color, index) => {
+        FACES_COLOR.forEach((color, index) => {
             // Assign a color to each face based on its index
             let face = this.getFaceByIndex(index);
             // Create a 3x3 array filled with the face's color

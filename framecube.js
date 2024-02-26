@@ -4,6 +4,8 @@ import {initialize as initializeDB} from '@root/utils/db.js';
 
 const port = process.env.PORT || 3000;
 
+await initializeDB();
+
 await new Promise((resolve, reject) => {
   try{
     const _server = app.listen(port, () => {
@@ -14,8 +16,6 @@ await new Promise((resolve, reject) => {
     reject(err)
   }
 });
-
-await initializeDB();
 
 if(!isLive()){
   const listener = await ngrok.connect({

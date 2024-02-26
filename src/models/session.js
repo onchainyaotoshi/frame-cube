@@ -1,3 +1,5 @@
+import db from '@utils/db.js';
+
 export default class Session {
   static tableName = 'sessions';
 

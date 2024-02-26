@@ -15,7 +15,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', resolvePath('views'));
 
-app.use(express.static('public'));
+app.use(express.static(resolvePath('public')));
 app.use(express.json());
 
 app.use(fcNamespace, neynar);

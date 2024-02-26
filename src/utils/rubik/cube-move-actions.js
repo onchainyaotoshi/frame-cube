@@ -12,7 +12,19 @@ export default class CubeMoveActions {
             "D": "rotateD",
             "M": "rotateM",
             "E": "rotateE",
-            "S": "rotateS"
+            "S": "rotateS",
+            "F'": "rotateF",
+            "L'": "rotateL",
+            "B'": "rotateB",
+            "R'": "rotateR",
+            "U'": "rotateU",
+            "D'": "rotateD",
+            "M'": "rotateM",
+            "E'": "rotateE",
+            "S'": "rotateS",
+            "x": "rotatex",
+            "y": "rotatey",
+            "z": "rotatez",
         };
 
         this.state = state
@@ -22,10 +34,13 @@ export default class CubeMoveActions {
     executeMove(moveCode, clockwise = true) {
         // Use the moveMap to get the corresponding method name
         const methodName = this.moveMap[moveCode];
-
         // Check if the method exists to avoid errors
         if (methodName && typeof this[methodName] === "function") {
-            this[methodName](clockwise);
+            if(moveCode[1] == "'"){
+                this[methodName](false);
+            }else{
+                this[methodName](true);
+            }
             return true;
         }
 
@@ -45,18 +60,22 @@ export default class CubeMoveActions {
             // 0,0 -> 0,2 | 0,1 -> 1,2 | 0,2 -> 2,2
             // 1,0 -> 0,1 | 1,1 -> 1,1 | 1,2 -> 2,1
             // 2,0 -> 0,0 | 2,1 -> 1,0 | 2,2 -> 2,0
-            return face.map((col, rowIndex) =>
-                face.map((row) => row[rowIndex])
-            ).map((row) => row.reverse());
+            return [
+                [face[2][0],face[1][0],face[0][0]],
+                [face[2][1],face[1][1],face[0][1]],
+                [face[2][2],face[1][2],face[0][2]]
+            ];
         } else {
             // Counterclockwise rotation: Transpose the matrix and reverse each column
             // For example, the transformation of indices for counterclockwise rotation is as follows:
             // 0,0 -> 2,0 | 0,1 -> 1,0 | 0,2 -> 0,0
             // 1,0 -> 2,1 | 1,1 -> 1,1 | 1,2 -> 0,1
             // 2,0 -> 2,2 | 2,1 -> 1,2 | 2,2 -> 0,2
-            return face.map((row) =>
-                row.map((col, colIndex) => face[colIndex])
-            ).reverse();
+            return [
+                [face[0][2],face[1][2],face[2][2]],
+                [face[0][1],face[1][1],face[2][1]],
+                [face[0][0],face[1][0],face[2][0]]
+            ];
         }
     }
     
@@ -103,7 +122,7 @@ export default class CubeMoveActions {
     
             // Left to Down (Note: Order is reversed compared to the clockwise case)
             // left[2][2] -> down[0][0] | left[1][2] -> down[0][1] | left[0][2] -> down[0][2]
-            this.state.down[0] = [this.state.left[2][2], this.state.left[1][2], this.state.left[0][2]].reverse();
+            this.state.down[0] = [this.state.left[0][2], this.state.left[1][2], this.state.left[2][2]]
     
             // Up to Left
             // up[2][2] -> left[0][2] | up[2][1] -> left[1][2] | up[2][0] -> left[2][2]
@@ -203,24 +222,24 @@ export default class CubeMoveActions {
     
             // Temp to Left
             // temp[0] -> left[2][0] | temp[1] -> left[1][0] | temp[2] -> left[0][0]
-            this.state.left[2][0] = temp[0];
+            this.state.left[2][0] = temp[2];
             this.state.left[1][0] = temp[1];
-            this.state.left[0][0] = temp[2];
+            this.state.left[0][0] = temp[0];
         } else {
             // Counterclockwise rotation
             let temp = [this.state.up[0][2], this.state.up[0][1], this.state.up[0][0]];
     
             // Left to Up (in reversed order because left face is opposite)
             // left[2][0] -> up[0][2] | left[1][0] -> up[0][1] | left[0][0] -> up[0][0]
-            this.state.up[0][2] = this.state.left[2][0];
+            this.state.up[0][2] = this.state.left[0][0];
             this.state.up[0][1] = this.state.left[1][0];
-            this.state.up[0][0] = this.state.left[0][0];
+            this.state.up[0][0] = this.state.left[2][0];
     
             // Down to Left
             // down[2][2] -> left[0][0] | down[2][1] -> left[1][0] | down[2][0] -> left[2][0]
-            this.state.left[0][0] = this.state.down[2][2];
+            this.state.left[0][0] = this.state.down[2][0];
             this.state.left[1][0] = this.state.down[2][1];
-            this.state.left[2][0] = this.state.down[2][0];
+            this.state.left[2][0] = this.state.down[2][2];
     
             // Right to Down
             // right[0][2] -> down[2][2] | right[1][2] -> down[2][1] | right[2][2] -> down[2][0]
@@ -516,9 +535,9 @@ export default class CubeMoveActions {
             this.state.up[1][2] = this.state.left[0][1];
     
             // Down to Left
-            this.state.left[0][1] = this.state.down[1][2];
+            this.state.left[0][1] = this.state.down[1][0];
             this.state.left[1][1] = this.state.down[1][1];
-            this.state.left[2][1] = this.state.down[1][0];
+            this.state.left[2][1] = this.state.down[1][2];
     
             // Right to Down (Note: Rotate right columns to match the down row orientation)
             this.state.down[1][0] = this.state.right[2][1];
@@ -526,9 +545,9 @@ export default class CubeMoveActions {
             this.state.down[1][2] = this.state.right[0][1];
     
             // Temp (Up) to Right
-            this.state.right[0][1] = temp[2];
+            this.state.right[0][1] = temp[0];
             this.state.right[1][1] = temp[1];
-            this.state.right[2][1] = temp[0];
+            this.state.right[2][1] = temp[2];
     
         } else {
             // Counterclockwise rotation of the standing layer (equivalent to moving the layer from down to up when facing the front)
@@ -540,9 +559,9 @@ export default class CubeMoveActions {
             this.state.up[1][2] = this.state.right[2][1];
     
             // Down to Right
-            this.state.right[0][1] = this.state.down[1][0];
+            this.state.right[0][1] = this.state.down[1][2];
             this.state.right[1][1] = this.state.down[1][1];
-            this.state.right[2][1] = this.state.down[1][2];
+            this.state.right[2][1] = this.state.down[1][0];
     
             // Left to Down (Note: Rotate left columns to match the down row orientation)
             this.state.down[1][0] = this.state.left[0][1];
@@ -550,10 +569,27 @@ export default class CubeMoveActions {
             this.state.down[1][2] = this.state.left[2][1];
     
             // Temp (Up) to Left
-            this.state.left[0][1] = temp[0];
+            this.state.left[0][1] = temp[2];
             this.state.left[1][1] = temp[1];
-            this.state.left[2][1] = temp[2];
+            this.state.left[2][1] = temp[0];
         }
     }
     
+    rotatex(){
+        this.rotateL(false);
+        this.rotateM(false);
+        this.rotateR(true);
+    }
+
+    rotatey(){
+        this.rotateU(true);
+        this.rotateE(false);
+        this.rotateD(false);
+    }
+
+    rotatez(){
+        this.rotateF(true);
+        this.rotateS(true);
+        this.rotateB(false);
+    }
 }

@@ -28,8 +28,8 @@ const createSessionsTable = async () => {
       table.timestamp('start_time', { useTz: true }).notNullable();
       table.timestamp('end_time', { useTz: true });
       table.enu('status', ['active', 'completed', 'abandoned']).notNullable();
-      table.char('initial_state', 59).notNullable();
-      table.char('current_state', 59).notNullable();
+      table.varchar('initial_state', 59).notNullable();
+      table.varchar('current_state', 59).notNullable();
       table.foreign('fid').references('users.fid');
     });
     console.log('Table sessions created');
@@ -46,8 +46,8 @@ const createMovesTable = async () => {
       table.integer('session_id').notNullable();
       table.integer('move_sequence').notNullable();
       table.string('move_notation', 10).notNullable();
-      table.char('from_state', 59).notNullable();
-      table.char('to_state', 59).notNullable();
+      table.varchar('from_state', 59).notNullable();
+      table.varchar('to_state', 59).notNullable();
       table.timestamp('move_timestamp', { useTz: true }).defaultTo(db.fn.now());
       table.foreign('session_id').references('sessions.session_id');
     });
