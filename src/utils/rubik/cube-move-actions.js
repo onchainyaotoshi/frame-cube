@@ -99,7 +99,7 @@ export default class CubeMoveActions {
     
             // Down to Left
             // down[0][0] -> left[2][2] | down[0][1] -> left[1][2] | down[0][2] -> left[0][2]
-            this.state.down[0] = [this.state.right[0][0], this.state.right[1][0], this.state.right[2][0]];
+            this.state.down[0] = [this.state.right[2][0], this.state.right[1][0], this.state.right[0][0]];
     
             // Right to Down
             // right[0][0] -> down[0][0] | right[1][0] -> down[0][1] | right[2][0] -> down[0][2]
@@ -204,9 +204,9 @@ export default class CubeMoveActions {
     
             // Right to Up
             // right[0][2] -> up[0][2] | right[1][2] -> up[0][1] | right[2][2] -> up[0][0]
-            this.state.up[0][2] = this.state.right[0][2];
+            this.state.up[0][2] = this.state.right[2][2];
             this.state.up[0][1] = this.state.right[1][2];
-            this.state.up[0][0] = this.state.right[2][2];
+            this.state.up[0][0] = this.state.right[0][2];
     
             // Down to Right
             // down[2][2] -> right[0][2] | down[2][1] -> right[1][2] | down[2][0] -> right[2][2]

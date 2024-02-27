@@ -4,20 +4,42 @@ import CubeState from '@utils/rubik/cube-state.js';
 export default class Rubik{
     constructor(state,totalScrambleMove) {
         if(typeof state === "string"){
-            this.state = CubeState.fromString(state);
+            this._state = CubeState.fromString(state);
         }else if(Array.isArray(state)){
-            this.state = CubeState(state);
+            this._state = CubeState(state);
         }else{
-            this.state = new CubeState();
-            this.state.scramble(totalScrambleMove);
+            let scrambleLength;
+            if(typeof totalScrambleMove === undefined){
+                scrambleLength = Math.floor(Math.random() * (100 - 50 + 1)) + 50; // Random number between 50 and 100
+            }else{
+                scrambleLength = totalScrambleMove;
+            }
+            this._state = new CubeState();
+            this._state.scramble(scrambleLength);
         }
     }
 
     renderToBase64(){
-        return (new CubeView(this.state.state)).renderToBase64();
+        return (new CubeView(this._state.state)).renderToBase64();
     }
 
     renderToPNG(){
-        return (new CubeView(this.state.state)).renderToPNG();
+        return (new CubeView(this._state.state)).renderToPNG();
+    }
+
+    toString(){
+        return this._state.toString();
+    }
+
+    move(code){
+        this._state.moveActions.executeMove(code);
+    }
+
+    isSolved(){
+        return this._state.isSolved();
+    }
+
+    getMoveCodes(){
+        return this._state.moveActions.getMoveCodes();
     }
 }

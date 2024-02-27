@@ -1,6 +1,5 @@
 import { renderFrame } from '@utils/render-frame.js';
 import Rubik from '@utils/rubik/rubik.js';
-import logger from '@utils/logger.js';
 import User from '@models/user.js';
 import Session from '@models/session.js';
 import Move from '@models/move.js';
@@ -14,7 +13,7 @@ const getOrCreateRubikSession = async(req)=>{
         session = await Session.create({
             fid:req.fc.neynar.postData.fid,
             startTime:req.fc.neynar.postData.action.timestamp,
-            initialState:rubik.state.toString()
+            initialState:rubik.toString()
         });
     }else{
         rubik = new Rubik(session.current_state);
@@ -46,21 +45,21 @@ export const runMove = async (req, res, next) => {
         if (req.fc.neynar.postData.action.tapped_button.index === 1) {
             const moves = req.fc.neynar.postData.action.input.text.trim().split(" ").map(v => v.trim());
             for(let i=0;i<moves.length;i++){
-                const beforeState = rubik.state.toString();
-                const valid = rubik.state.moveActions.executeMove(moves[i]);
+                const beforeState = rubik.toString();
+                const valid = rubik.move(moves[i]);
                 if(valid){
                     await Move.create({
                         sessionId:session.session_id,
                         moveNotation:moves[i],
                         fromState:beforeState,
-                        toState:rubik.state.toString(),
+                        toState:rubik.toString(),
                         moveTimestamp:req.fc.neynar.postData.action.timestamp
                     });
                 }
             }
 
-            await Session.updateCurrentState(session.session_id,rubik.state.toString());
-            if(!rubik.state.isSolved()){
+            await Session.updateCurrentState(session.session_id,rubik.toString());
+            if(!rubik.isSolved()){
                 renderFrame(res, {
                     image: rubik.renderToBase64(),
                     postUrl: `${process.env.FC_DOMAIN}/frame/rubik/run`,

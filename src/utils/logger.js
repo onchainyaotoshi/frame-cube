@@ -1,5 +1,5 @@
 import winston from 'winston';
-import path from 'path'
+import path from 'path';
 
 import { createPathContext } from '@utils/path-resolver.js';
 const { resolvePath } = createPathContext(import.meta.url);
@@ -35,8 +35,8 @@ const format = winston.format.combine(
 
 const transports = [
   new winston.transports.Console(),
-  new winston.transports.File({ filename: resolvePath(path.join('logs','error.log')), level: 'error' }),
-  new winston.transports.File({ filename: resolvePath(path.join('logs','all.log')) }),
+  new winston.transports.File({ filename: path.join(process.cwd(),'logs','error.log'), level: 'error' }),
+  new winston.transports.File({ filename: path.join(process.cwd(),'logs','all.log') }),
 ];
 
 const Logger = winston.createLogger({
