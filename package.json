@@ -5,7 +5,7 @@
   "main": "framecube.js",
   "type": "module",
   "scripts": {
-    "start": "dotenv -e .env -- node --loader esm-module-alias/loader framecube.js",
+    "start": "dotenv -e .env -- nodemon --loader esm-module-alias/loader framecube.js",
     "start:live": "dotenv -e .env.production -- node --loader esm-module-alias/loader framecube.js",
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules --loader esm-module-alias/loader' dotenv -e .env jest",
     "rubik2png": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/rubik2png.js"
@@ -36,14 +36,17 @@
     "node-fetch": "^3.3.2",
     "pg": "^8.11.3",
     "pngjs": "^7.0.0",
+    "pretty-seconds": "^3.0.1",
     "satori": "^0.10.13",
     "satori-html": "^0.3.2",
+    "text-to-image": "^5.2.0",
     "three": "^0.161.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
     "dotenv-cli": "^7.3.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0"
   }
 }

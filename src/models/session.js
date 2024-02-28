@@ -59,5 +59,16 @@ export default class Session {
         .where({ fid: fid, status: 'completed',  session_id:sessionId})
         .first();
     }
+
+  // Method to get the leaderboard of fastest solved sessions, including only fid, session_id, and duration in seconds
+  static async getLeaderboard(limit = 10) {
+    return db(this.tableName)
+      .select('fid', 'session_id')
+      .select(db.raw('ROUND(EXTRACT(EPOCH FROM (end_time - start_time))) AS duration_seconds')) // Round duration to nearest integer
+      .whereNotNull('end_time') // Ensure the session has ended
+      .andWhere('status', '=', 'completed') // Filter only completed sessions
+      .orderBy('duration_seconds', 'asc') // Order by the rounded duration in ascending order
+      .limit(limit); // Limit the number of results
+  }
 }
 

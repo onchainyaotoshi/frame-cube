@@ -2,6 +2,7 @@ import satori from "satori";
 import { html } from 'satori-html';
 import fs from 'fs/promises';
 import path from 'path';
+import textToImage from 'text-to-image';
 
 import { createPathContext } from '@utils/path-resolver.js';
 const { resolvePath } = createPathContext(import.meta.url);
@@ -19,7 +20,20 @@ const markup = (text) => html`
 </div>
 `;
 
-export default async (text)=>{
+export default async (text, useSatori = false)=>{
+
+  if(!useSatori){
+    return await textToImage.generate(text,{
+      maxWidth: 1000,
+      fontSize: 36,
+      fontFamily: 'sans-serif',
+      customHeight: 1000/1.91,
+      bgColor: 'transparent',
+      textColor: 'white',
+      textAlign:'center',
+      verticalAlign:'center'
+    });
+  }else{
     const svg = await satori(markup (text), {
         width: 1000,
         height: 1000/1.91,
@@ -34,4 +48,5 @@ export default async (text)=>{
     });
 
     return svgToDataUri(svg);
+  }
 }

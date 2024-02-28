@@ -5,6 +5,7 @@ import Session from '@models/session.js';
 import Move from '@models/move.js';
 import WelcomeAirdrop from '@models/welcome-airdrop.js';
 import {getTokenReward, sendErc20} from '@utils/wallet/index.js';
+import pretty from 'pretty-seconds';
 
 const getOrCreateRubikSession = async(req)=>{
     await User.createIfNotExists(req.fc.neynar.postData.fid);
@@ -34,7 +35,7 @@ const renderFrameUnsolvedRubik = async (res, rubik)=>{
             // { text: "y - rotate ←" },
             // { text: "x - rotate ↻" },
         ],
-        input: { placeholder: "Singmaster Notation where c: counter-clockwise, t: twice" }
+        input: { placeholder: "Singmaster Notation" }
       });
 }
 
@@ -137,5 +138,31 @@ export const claim = async (req, res, next) => {
     }catch(error){
         console.log(error)
         next(error);
+    }
+}
+
+export const leaderboard = async(req,res,next)=>{
+    try{
+        const data = await Session.getLeaderboard(10);
+        // console.log(data);//[{ fid: '282770', session_id: 1, duration_seconds: '1008' }]
+
+        let html = `
+        Top 10 LeaderBoard:\n
+        `
+
+        for(let i=0;i<data.length;i++){
+            html+= `${(i+1)}. ${data[i].fid} - ${pretty(parseInt(data[i].duration_seconds))}\n`
+        }
+
+        renderFrame(res, {
+            image: await req.fc.textToImage(html),
+            postUrl: `${process.env.FC_DOMAIN}/frame`,
+            buttons: [
+                { text: "Go Back" },
+            ]
+        });
+    }catch(err){
+        console.error(err);
+        next(err);
     }
 }

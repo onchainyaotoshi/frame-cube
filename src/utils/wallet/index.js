@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Core } from '@quicknode/sdk';
-import { baseSepolia } from 'viem/chains'; // Change the network as needed
+import { baseSepolia, base } from 'viem/chains'; // Change the network as needed
 import { createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import frame from '@utils/wallet/abi/frame.json' assert { type: 'json' };
@@ -33,7 +33,7 @@ const core = new Core({
     endpointUrl: process.env.FC_QUICKNODE_HTTPS_URL,
 });
 
-const walletClient = createWalletClient({ account, chain: baseSepolia, transport: http(core.endpointUrl) });
+const walletClient = createWalletClient({ account, chain: isLive() ? base : baseSepolia, transport: http(core.endpointUrl) });
 
 export const getTokenReward = ()=>{
     const keys = Object.keys(SMART_CONTRACT);
