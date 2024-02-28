@@ -70,5 +70,21 @@ export default class Session {
       .orderBy('duration_seconds', 'asc') // Order by the rounded duration in ascending order
       .limit(limit); // Limit the number of results
   }
+
+  static async getShortestSolveTime(fid) {
+    if (!fid) {
+        throw new Error('FID is required');
+    }
+
+    const result = await db(this.tableName)
+        .select(db.raw('ROUND(EXTRACT(EPOCH FROM (end_time - start_time))) AS duration_seconds'))
+        .whereNotNull('end_time') // Ensure the session has ended
+        .andWhere('status', '=', 'completed') // Filter only completed sessions
+        .andWhere('fid', '=', fid) // Filter by the specific FID
+        .orderBy('duration_seconds', 'asc') // Order by duration in ascending order
+        .first(); // Retrieve only the shortest duration
+
+    return result ? result.duration_seconds : null; // Return the shortest duration or null if not found
+  }
 }
 

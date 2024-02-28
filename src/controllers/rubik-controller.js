@@ -166,3 +166,24 @@ export const leaderboard = async(req,res,next)=>{
         next(err);
     }
 }
+
+export const myscore = async(req,res,next)=>{
+    try{
+        const data = await Session.getShortestSolveTime(req.fc.neynar.postData.fid);
+
+        let html = `
+        Your Quickest Solve :\n ${data === null ? '' : pretty(parseInt(data.duration_seconds))}
+        `
+
+        renderFrame(res, {
+            image: await req.fc.textToImage(html),
+            postUrl: `${process.env.FC_DOMAIN}/frame`,
+            buttons: [
+                { text: "Go Back" },
+            ]
+        });
+    }catch(err){
+        console.error(err);
+        next(err);
+    }
+}

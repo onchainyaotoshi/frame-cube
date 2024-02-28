@@ -8,6 +8,7 @@ export const frameController = async (req, res, next) => {
             buttons: [
                 { text: "Let's play" },
                 { text: "Leaderboard", target:`${process.env.FC_DOMAIN}/frame/rubik/leaderboard` },
+                { text: "My Score", target:`${process.env.FC_DOMAIN}/frame/rubik/myscore` },
             ]
         });
     } catch (error) {
