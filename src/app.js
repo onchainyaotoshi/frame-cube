@@ -26,6 +26,4 @@ app.use("/frame", FrameRoute);
 // Place this middleware last to handle errors.
 app.use(errorHandler);
 
-export const isLive = ()=>process.env.NODE_ENV != 'development';
-
 export default app;

@@ -4,27 +4,45 @@ export default class CubeMoveActions {
     constructor(state) {
         // Define the mapping from face codes to method names within the class
         this.moveMap = {
-            "F": "rotateF",
-            "L": "rotateL",
-            "B": "rotateB",
-            "R": "rotateR",
-            "U": "rotateU",
-            "D": "rotateD",
-            "M": "rotateM",
-            "E": "rotateE",
-            "S": "rotateS",
-            "F'": "rotateF",
-            "L'": "rotateL",
-            "B'": "rotateB",
-            "R'": "rotateR",
-            "U'": "rotateU",
-            "D'": "rotateD",
-            "M'": "rotateM",
-            "E'": "rotateE",
-            "S'": "rotateS",
-            "x": "rotatex",
-            "y": "rotatey",
-            "z": "rotatez",
+            "f": "rotateF",
+            "l": "rotateL",
+            "b": "rotateB",
+            "r": "rotateR",
+            "u": "rotateU",
+            "d": "rotateD",
+            "m": "rotateM",
+            "e": "rotateE",
+            "s": "rotateS",
+            "fc": "rotateF",
+            "lc": "rotateL",
+            "bc": "rotateB",
+            "rc": "rotateR",
+            "uc": "rotateU",
+            "dc": "rotateD",
+            "mc": "rotateM",
+            "ec": "rotateE",
+            "sc": "rotateS",
+            "ft": "rotateF",
+            "lt": "rotateL",
+            "bt": "rotateB",
+            "rt": "rotateR",
+            "ut": "rotateU",
+            "dt": "rotateD",
+            "mt": "rotateM",
+            "et": "rotateE",
+            "st": "rotateS",
+            "ftc": "rotateF",
+            "ltc": "rotateL",
+            "btc": "rotateB",
+            "rtc": "rotateR",
+            "utc": "rotateU",
+            "dtc": "rotateD",
+            "mtc": "rotateM",
+            "etc": "rotateE",
+            "stc": "rotateS",
+            "x":"rotatex",
+            "y":"rotatey",
+            "z":"rotatez"
         };
 
         this.state = state
@@ -36,9 +54,15 @@ export default class CubeMoveActions {
         const methodName = this.moveMap[moveCode];
         // Check if the method exists to avoid errors
         if (methodName && typeof this[methodName] === "function") {
-            if(moveCode[1] == "'"){
+            if(moveCode[1] == "t" && moveCode[2] == "c"){
                 this[methodName](false);
-            }else{
+                this[methodName](false);
+            }else if(moveCode[1] == "t" && !moveCode[2]){
+                this[methodName](true);
+                this[methodName](true);
+            }else if(moveCode[1] == "c"){
+                this[methodName](false);
+            }else if(!moveCode[1]){
                 this[methodName](true);
             }
             return true;

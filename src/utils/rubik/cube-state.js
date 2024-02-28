@@ -38,6 +38,7 @@ class CubeState {
 
         // Instantiate MoveActions
         this.moveActions = new CubeMoveActions(this.state);
+        this.availableMoves = (this.moveActions.getMoveCodes()).filter(element => element !== 'x' && element !== 'y' && element !== 'z');
     }
 
     // Generate a solved initial state with each face having a uniform color
@@ -66,12 +67,11 @@ class CubeState {
     scramble(numMoves = 20) {
         let scrambleMoves = '';
         let lastMoveFace = '';
-        let availableMoves = this.moveActions.getMoveCodes();
 
         for (let i = 0; i < numMoves; i++) {
             let randomMove;
             do {
-                randomMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+                randomMove = this.availableMoves[Math.floor(Math.random() * this.availableMoves.length)];
             } while (randomMove[0] === lastMoveFace); // Avoid repeating moves for the same face
 
             // Perform the move

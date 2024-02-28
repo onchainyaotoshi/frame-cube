@@ -13,10 +13,9 @@ export const neynar = (req, res, next) => {
 export const validateFrameAction = async (req, res, next) => {
     const { trustedData, untrustedData } = req.body;
     let result;
-
     try {
         //since farcaster required post response in 5 seconds, sometimes not validate is a wise move.
-        if(process.env.FC_VALIDATE_FRAME_ACTION == "1"){
+        if(process.env.FC_VALIDATE_FRAME_ACTION == "1" || req.path.includes("/claim")){
             // Wait for the async validation function to complete
             result = await req.fc.neynar.client.validateFrameAction(trustedData.messageBytes);
             if (result.valid) {

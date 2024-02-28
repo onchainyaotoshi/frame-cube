@@ -10,7 +10,7 @@ export default class Rubik{
         }else{
             let scrambleLength;
             if(typeof totalScrambleMove === undefined){
-                scrambleLength = Math.floor(Math.random() * (100 - 50 + 1)) + 50; // Random number between 50 and 100
+                scrambleLength = Math.floor(Math.random() * (60 - 30 + 1)) + 30; // Random number between 50 and 100
             }else{
                 scrambleLength = totalScrambleMove;
             }

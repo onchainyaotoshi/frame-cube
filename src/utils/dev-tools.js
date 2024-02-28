@@ -39,11 +39,11 @@ const transports = [
   new winston.transports.File({ filename: path.join(process.cwd(),'logs','all.log') }),
 ];
 
-const Logger = winston.createLogger({
+export const Logger = winston.createLogger({
   level: level(),
   levels,
   format,
   transports,
 });
 
-export default Logger;
+export const isLive = ()=>process.env.NODE_ENV != 'development';

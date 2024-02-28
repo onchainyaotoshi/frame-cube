@@ -7,11 +7,20 @@ import frame from '@utils/wallet/abi/frame.json' assert { type: 'json' };
 import toshi from '@utils/wallet/abi/toshi.json' assert { type: 'json' };
 import test from '@utils/wallet/abi/test.json' assert { type: 'json' };
 
+import {isLive} from '@utils/dev-tools.js';
+
 const SMART_CONTRACT = {
     "test": { abi: test, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54' },
     "toshi": { abi: toshi, address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4' },
     "frame": { abi: frame, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567' }
 };
+
+if(isLive()){
+    delete SMART_CONTRACT.test;
+}else{
+    delete SMART_CONTRACT.toshi;
+    delete SMART_CONTRACT.frame;
+}
 
 // Define your private key
 const privateKey = '0x' + process.env.FC_WALLET_PRIVATE_KEY;
@@ -25,6 +34,13 @@ const core = new Core({
 });
 
 const walletClient = createWalletClient({ account, chain: baseSepolia, transport: http(core.endpointUrl) });
+
+export const getTokenReward = ()=>{
+    const keys = Object.keys(SMART_CONTRACT);
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+    return randomKey;
+}
 
 export const sendEth = async (to, amount) => {
     if (typeof amount != 'string') {

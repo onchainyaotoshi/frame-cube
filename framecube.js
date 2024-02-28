@@ -1,6 +1,7 @@
 import ngrok from '@ngrok/ngrok';
-import app, {isLive} from '@root/app.js';
+import app from '@root/app.js';
 import {initialize as initializeDB} from '@root/utils/db.js';
+import {isLive} from '@utils/dev-tools.js';
 
 const port = process.env.PORT || 3000;
 

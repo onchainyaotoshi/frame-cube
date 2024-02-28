@@ -54,6 +54,10 @@ export default class Session {
         .returning('*'); // Return the updated session object
     }
   
-  
+    static async find(fid, sessionId) {
+      return db(this.tableName)
+        .where({ fid: fid, status: 'completed',  session_id:sessionId})
+        .first();
+    }
 }
 

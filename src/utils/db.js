@@ -57,10 +57,32 @@ const createMovesTable = async () => {
   }
 };
 
+const createWelcomeAirdropsTable = async () => {
+  const exists = await db.schema.hasTable('welcome_airdrops');
+  if (!exists) {
+    await db.schema.createTable('welcome_airdrops', (table) => {
+      table.increments('id').primary(); // Primary key
+      table.bigInteger('fid').notNullable(); // User foreign ID
+      table.string('token', 255).notNullable(); // Token name or symbol
+      table.integer('amount').notNullable(); // Token amount as an integer
+      table.string('address', 42).nullable(); // Blockchain address, now nullable
+      table.integer('session_id').unsigned().notNullable(); // New column for session_id as an unsigned integer
+
+      table.foreign('fid').references('users.fid'); // Foreign key relationship to the 'users' table
+      table.foreign('session_id').references('sessions.session_id'); // Foreign key relationship to the 'sessions' table
+    });
+    console.log('Table welcome_airdrops created');
+  } else {
+    console.log('Table welcome_airdrops already exists');
+  }
+};
+
+
 export const initialize = async()=>{
   await createUsersTable();
   await createSessionsTable();
   await createMovesTable();
+  await createWelcomeAirdropsTable();
 }
 
 export default db;
