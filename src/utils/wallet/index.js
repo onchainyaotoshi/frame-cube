@@ -10,7 +10,7 @@ import test from '@utils/wallet/abi/test.json' assert { type: 'json' };
 import {isLive} from '@utils/dev-tools.js';
 
 const SMART_CONTRACT = {
-    "test": { ticker: 'test', abi: test, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54', amount:99 },
+    "test": { ticker: 'test', abi: test, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54', amount:100 },
     "toshi": { ticker: 'toshi', abi: toshi, address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4', amount: 100},
     "frame": { ticker: 'frame',abi: frame, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567', amount: 10000 }
 };
