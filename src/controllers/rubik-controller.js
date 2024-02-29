@@ -6,6 +6,7 @@ import Move from '@models/move.js';
 import WelcomeAirdrop from '@models/welcome-airdrop.js';
 import {getTokenReward, sendErc20} from '@utils/wallet/index.js';
 import pretty from 'pretty-seconds';
+import {renderFrameHome} from '@controllers/frame-controller.js';
 
 const getOrCreateRubikSession = async(req)=>{
     await User.createIfNotExists(req.fc.neynar.postData.fid);
@@ -72,7 +73,15 @@ export const runMove = async (req, res, next) => {
         const buttonIndex = req.fc.neynar.postData.action.tapped_button.index;
         let {session, rubik} = await getOrCreateRubikSession(req);
         if (buttonIndex === 1) {
-            const moves = req.fc.neynar.postData.action.input.text.trim().split(" ").map(v => v.trim());
+            const commands = req.fc.neynar.postData.action.input.text.trim();
+            if(commands.toLowerCase() == 'home'){
+                return renderFrameHome(res);
+            }else if(commands.toLowerCase() == 'reset'){
+                await Session.deleteSessionById(session.session_id);
+                return renderFrameHome(res);
+            }
+
+            const moves = commands.split(" ").map(v => v.trim());
             for(let i=0;i<moves.length;i++){
                 await createRubikMove({
                     req:req,
@@ -87,23 +96,38 @@ export const runMove = async (req, res, next) => {
             if(!rubik.isSolved()){
                 renderFrameUnsolvedRubik(res, rubik);
             }else{
+                let claimed = true;
                 await Session.markSessionAsCompleted(session.session_id,req.fc.neynar.postData.action.timestamp);
-                if(!(await WelcomeAirdrop.findByFid(req.fc.neynar.postData.fid))){
-                    //belum claim
+                const duration = await Session.getSolveTime(session.session_id);
+                const myFastestDuration = await Session.getShortestSolveTime(req.fc.neynar.postData.fid);
+                if(myFastestDuration == null){
+                    claimed = false;
+                }else if(parseInt(duration) < parseInt(myFastestDuration)){
+                    claimed = false;
+                }
+
+                // const claimed = await WelcomeAirdrop.findByFid(req.fc.neynar.postData.fid);
+                if(!claimed){
                     renderFrame(res, {
-                        image: `${process.env.FC_DOMAIN}/images/alert-congrat.png`,
+                        image: await req.fc.textToImage(`
+                        Congratulations on solving the Rubik's Cube \n\nin\n\n ${pretty(parseInt(duration))}!
+                        `),
                         postUrl: `${process.env.FC_DOMAIN}/frame/rubik/claim/${session.session_id}`,
                         buttons: [
                             { text: "Claim Reward" },
                         ]
                     });
                 }else{
-                    //sudah claim
                     renderFrame(res, {
-                        image: `${process.env.FC_DOMAIN}/images/alert-oneperwallet.png`,
+                        image: await req.fc.textToImage(`
+                        Congratulations on solving the Rubik's Cube \n\n ${pretty(parseInt(duration))}!\n
+                        You can claim the rewards, if:\n\n current solve time < fastest solve time record.\n
+                        Your fastest solve time is ${pretty(parseInt(myFastestDuration))}
+                        `), 
                         postUrl: `${process.env.FC_DOMAIN}/frame/rubik/start`,
                         buttons: [
                             { text: "Play again?" },
+                            { text: "Home", target:`${process.env.FC_DOMAIN}/frame` },
                         ]
                     });
                 }
@@ -137,7 +161,14 @@ export const runMove = async (req, res, next) => {
                         updateSessionState:true
                     });
                     break;
+                default:
+                    next(new Error('invalid button index'));
+                    break;
             }
+
+            renderFrameUnsolvedRubik(res, rubik);
+        }else{
+            next(new Error('invalid button index'));
         }
     } catch (error) {
         next(error);
@@ -176,6 +207,7 @@ export const claim = async (req, res, next) => {
             postUrl: `${process.env.FC_DOMAIN}/frame/rubik/start`,
             buttons: [
                 { text: "Play again?" },
+                { text: "Home", target:`${process.env.FC_DOMAIN}/frame` },
                 { text: "Transactions", action: "link", target: `${process.env.FC_BLOCK_EXPLORER_URL}/address/${process.env.FC_WALLET_ADDRESS}` }
             ]
         });
@@ -188,22 +220,22 @@ export const claim = async (req, res, next) => {
 
 export const leaderboard = async(req,res,next)=>{
     try{
-        const data = await Session.getLeaderboard(10);
+        const data = await Session.getLeaderboard(8);
         // console.log(data);//[{ fid: '282770', session_id: 1, duration_seconds: '1008' }]
 
         let html = `
-        Top 10 LeaderBoard:\n
+        Top 8 Fastest Solves Leaderboard:\n
         `
 
         for(let i=0;i<data.length;i++){
-            html+= `${(i+1)}. ${data[i].fid} - ${pretty(parseInt(data[i].duration_seconds))}\n`
+            html+= `${(i+1)}. ${data[i].fid} - ${pretty(parseInt(data[i].duration_seconds))}\n\n`
         }
 
         renderFrame(res, {
-            image: await req.fc.textToImage(html),
+            image: await req.fc.textToImage(html, 24),
             postUrl: `${process.env.FC_DOMAIN}/frame`,
             buttons: [
-                { text: "Go Back" },
+                { text: "Home" },
             ]
         });
     }catch(err){
@@ -215,16 +247,16 @@ export const leaderboard = async(req,res,next)=>{
 export const myscore = async(req,res,next)=>{
     try{
         const data = await Session.getShortestSolveTime(req.fc.neynar.postData.fid);
-
         let html = `
-        Your Quickest Solve :\n ${data === null ? '' : pretty(parseInt(data.duration_seconds))}
+        Your Fastest Solve :\n 
+        ${data === null ? '' : pretty(parseInt(data))}
         `
 
         renderFrame(res, {
             image: await req.fc.textToImage(html),
             postUrl: `${process.env.FC_DOMAIN}/frame`,
             buttons: [
-                { text: "Go Back" },
+                { text: "Home" },
             ]
         });
     }catch(err){

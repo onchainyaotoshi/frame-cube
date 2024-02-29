@@ -49,7 +49,9 @@ const createMovesTable = async () => {
       table.varchar('from_state', 59).notNullable();
       table.varchar('to_state', 59).notNullable();
       table.timestamp('move_timestamp', { useTz: true }).defaultTo(db.fn.now());
-      table.foreign('session_id').references('sessions.session_id');
+
+      // Add onDelete('CASCADE') to automatically delete moves when the associated session is deleted
+      table.foreign('session_id').references('sessions.session_id').onDelete('CASCADE');
     });
     console.log('Table moves created');
   } else {

@@ -2,47 +2,34 @@
 
 The 3x3x3 Rubik's Cube is designed for a Farcaster frame.
 
-# Rubik's Cube Notation Guide
+# Rubik's Cube Notation Cheatsheet
 
-This guide explains the notation used in this Rubik's Cube project to perform rotations and manipulate the cube.
+## Basic Moves
+- **u, r, l, f, b, d**: Turn specified layer clockwise.
+- **q**: Turn layer counterclockwise (prefix with layer, e.g., `uq` for Up counterclockwise).
+- **w**: Turn layer 180 degrees (prefix with layer, e.g., `uw` for Up 180 degrees).
 
-## Basic Rules
-
-- **Lowercase letters**: Turn the specified layer or the entire cube clockwise.
-- **Uppercase letters**: Turn the specified layer or the entire cube counterclockwise.
-- **Multiple Actions**: Separate commands with a space to perform multiple actions in sequence. Example: `u R` turns the Up layer clockwise and then the Right layer counterclockwise.
-
-## Face Rotation
-
-Control individual layers of the cube:
-
-- **u (U)**: Up - The top layer.
-- **f (F)**: Front - The layer facing you.
-- **b (B)**: Back - The layer opposite the front.
-- **l (L)**: Left - The layer on the left side.
-- **r (R)**: Right - The layer on the right side.
-- **d (D)**: Down - The bottom layer.
+## Layer Identifiers
+- **u (or t)**: Up - Top layer
+- **f**: Front - Layer facing you
+- **b**: Back - Layer opposite Front
+- **l**: Left - Layer on the left side
+- **r**: Right - Layer on the right side
+- **d (or b)**: Down - Bottom layer
 
 ## Middle Layer Rotation
+- **m**: Middle - Layer between Left and Right
+- **e**: Equatorial - Layer between Up and Down
+- **s**: Standing - Layer between Front and Back
 
-Manipulate the slices between the outer layers:
-
-- **m (M)**: Middle - The layer between Left and Right.
-- **e (E)**: Equatorial - The layer between Up and Down.
-- **s (S)**: Standing - The layer between Front and Back.
-
-## View Angle Rotation
-
-Rotate the entire cube:
-
-- **x**: Rotate 90° around the X-axis.
-- **y**: Rotate 90° around the Y-axis.
-- **z**: Rotate 90° around the Z-axis.
+## Cube Rotation
+- **x**: Rotate cube 90° around X-axis
+- **y**: Rotate cube 90° around Y-axis
+- **z**: Rotate cube 90° around Z-axis
 
 ## Special Commands
+- **reset**: Reset and scramble the cube
+- **home**: Go to homepage
 
-- **reset**: Start a new, randomized cube. Use this to reset and scramble the cube for a new solving challenge.
-
-## Example
-
-To rotate the top layer clockwise and then the front layer counterclockwise, you would use the notation: `u F`.
+## Example Moves
+- `u rq fw`: Up clockwise, Right counterclockwise, Front 180 degrees

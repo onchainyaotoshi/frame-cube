@@ -32,7 +32,7 @@ export default class Rubik{
     }
 
     move(code){
-        this._state.moveActions.executeMove(code);
+        return this._state.moveActions.executeMove(code);
     }
 
     isSolved(){

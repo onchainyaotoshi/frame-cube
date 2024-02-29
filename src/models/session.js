@@ -86,5 +86,23 @@ export default class Session {
 
     return result ? result.duration_seconds : null; // Return the shortest duration or null if not found
   }
+
+  static async getSolveTime(sessionId) {
+    const result = await db(this.tableName)
+        .select(db.raw('ROUND(EXTRACT(EPOCH FROM (end_time - start_time))) AS duration_seconds'))
+        .whereNotNull('end_time') // Ensure the session has ended
+        .andWhere('status', '=', 'completed') // Filter only completed sessions
+        .andWhere('session_id', '=', sessionId) // Filter by the specific id
+        .first();
+        
+    return result ? result.duration_seconds : null; // Return the shortest duration or null if not found
+  }
+
+  // Method to delete a session by session_id
+  static async deleteSessionById(sessionId) {
+    return db(this.tableName)
+      .where({ session_id: sessionId, status: 'active' })
+      .del(); // Use the delete operation provided by your database querying library
+  }
 }
 

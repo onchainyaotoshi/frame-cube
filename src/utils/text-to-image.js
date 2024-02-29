@@ -20,12 +20,12 @@ const markup = (text) => html`
 </div>
 `;
 
-export default async (text, useSatori = false)=>{
+export default async (text, fontSize = 36, useSatori = false)=>{
 
   if(!useSatori){
     return await textToImage.generate(text,{
       maxWidth: 1000,
-      fontSize: 36,
+      fontSize: fontSize,
       fontFamily: 'sans-serif',
       customHeight: 1000/1.91,
       bgColor: 'transparent',
