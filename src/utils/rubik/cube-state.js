@@ -38,7 +38,7 @@ class CubeState {
 
         // Instantiate MoveActions
         this.moveActions = new CubeMoveActions(this.state);
-        this.availableMoves = (this.moveActions.getMoveCodes()).filter(element => element !== 'x' && element !== 'y' && element !== 'z');
+        this.availableMoves = (this.moveActions.getMoveCodes()).filter(element => element[0] !== 'x' && element[0] !== 'y' && element[0] !== 'z');
     }
 
     // Generate a solved initial state with each face having a uniform color

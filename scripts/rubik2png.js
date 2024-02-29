@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { constants } from 'fs';
-import Rubik from '@utils/rubik/rubik.js'; 
+import Rubik from '@utils/rubik/index.js'; 
 const TMP_PATH = path.join(process.cwd(),"tmp");
 
 async function checkDirectoryExists(dirPath) {

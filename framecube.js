@@ -26,5 +26,5 @@ if(!isLive()){
     domain: process.env.FC_DOMAIN.replace("https://","")
   });
   
-  console.log(listener.url());
+  console.log(`${listener.url()}/frame`);
 }

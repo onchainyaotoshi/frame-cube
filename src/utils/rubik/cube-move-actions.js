@@ -13,36 +13,53 @@ export default class CubeMoveActions {
             "m": "rotateM",
             "e": "rotateE",
             "s": "rotateS",
-            "fc": "rotateF",
-            "lc": "rotateL",
-            "bc": "rotateB",
-            "rc": "rotateR",
-            "uc": "rotateU",
-            "dc": "rotateD",
-            "mc": "rotateM",
-            "ec": "rotateE",
-            "sc": "rotateS",
-            "ft": "rotateF",
-            "lt": "rotateL",
-            "bt": "rotateB",
-            "rt": "rotateR",
-            "ut": "rotateU",
-            "dt": "rotateD",
-            "mt": "rotateM",
-            "et": "rotateE",
-            "st": "rotateS",
-            "ftc": "rotateF",
-            "ltc": "rotateL",
-            "btc": "rotateB",
-            "rtc": "rotateR",
-            "utc": "rotateU",
-            "dtc": "rotateD",
-            "mtc": "rotateM",
-            "etc": "rotateE",
-            "stc": "rotateS",
-            "x":"rotatex",
-            "y":"rotatey",
-            "z":"rotatez"
+            "t": "rotateU",
+            "b": "rotateD",
+            "fq": "rotateF",
+            "lq": "rotateL",
+            "bq": "rotateB",
+            "rq": "rotateR",
+            "uq": "rotateU",
+            "dq": "rotateD",
+            "mq": "rotateM",
+            "eq": "rotateE",
+            "sq": "rotateS",
+            "tq": "rotateU",
+            "bq": "rotateD",
+            "fw": "rotateF",
+            "lw": "rotateL",
+            "bw": "rotateB",
+            "rw": "rotateR",
+            "uw": "rotateU",
+            "dw": "rotateD",
+            "mw": "rotateM",
+            "ew": "rotateE",
+            "sw": "rotateS",
+            "tw": "rotateU",
+            "bw": "rotateD",
+            "fwq": "rotateF",
+            "lwq": "rotateL",
+            "bwq": "rotateB",
+            "rwq": "rotateR",
+            "uwq": "rotateU",
+            "dwq": "rotateD",
+            "mwq": "rotateM",
+            "ewq": "rotateE",
+            "swq": "rotateS",
+            "twq": "rotateU",
+            "bwq": "rotateD",
+            "x":"rotateX",
+            "y":"rotateY",
+            "z":"rotateZ",
+            "xw":"rotateX",
+            "yw":"rotateY",
+            "zw":"rotateZ",
+            "xq":"rotateX",
+            "yq":"rotateY",
+            "zq":"rotateZ",
+            "xwq":"rotateX",
+            "ywq":"rotateY",
+            "zwq":"rotateZ",
         };
 
         this.state = state
@@ -54,17 +71,20 @@ export default class CubeMoveActions {
         const methodName = this.moveMap[moveCode];
         // Check if the method exists to avoid errors
         if (methodName && typeof this[methodName] === "function") {
-            if(moveCode[1] == "t" && moveCode[2] == "c"){
+            if(moveCode[1] == "w" && moveCode[2] == "q"){
                 this[methodName](false);
                 this[methodName](false);
-            }else if(moveCode[1] == "t" && !moveCode[2]){
+            }else if(moveCode[1] == "w" && !moveCode[2]){
                 this[methodName](true);
                 this[methodName](true);
-            }else if(moveCode[1] == "c"){
+            }else if(moveCode[1] == "q"){
                 this[methodName](false);
             }else if(!moveCode[1]){
                 this[methodName](true);
+            }else{
+                return false;
             }
+            
             return true;
         }
 
@@ -599,21 +619,39 @@ export default class CubeMoveActions {
         }
     }
     
-    rotatex(){
-        this.rotateL(false);
-        this.rotateM(false);
-        this.rotateR(true);
+    rotateX(clockwise = true){
+        if(clockwise){
+            this.rotateL(false);
+            this.rotateM(false);
+            this.rotateR(true);
+        }else{
+            this.rotateL(true);
+            this.rotateM(true);
+            this.rotateR(false);
+        }
     }
 
-    rotatey(){
-        this.rotateU(true);
-        this.rotateE(false);
-        this.rotateD(false);
+    rotateY(clockwise = true){
+        if(clockwise){
+            this.rotateU(true);
+            this.rotateE(false);
+            this.rotateD(false);
+        }else{
+            this.rotateU(false);
+            this.rotateE(true);
+            this.rotateD(true);
+        }
     }
 
-    rotatez(){
-        this.rotateF(true);
-        this.rotateS(true);
-        this.rotateB(false);
+    rotateZ(clockwise = true){
+        if(clockwise){
+            this.rotateF(true);
+            this.rotateS(true);
+            this.rotateB(false);
+        }else{
+            this.rotateF(false);
+            this.rotateS(false);
+            this.rotateB(true);
+        }
     }
 }

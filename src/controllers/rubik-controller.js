@@ -1,5 +1,5 @@
 import { renderFrame } from '@utils/render-frame.js';
-import Rubik from '@utils/rubik/rubik.js';
+import Rubik from '@utils/rubik/index.js';
 import User from '@models/user.js';
 import Session from '@models/session.js';
 import Move from '@models/move.js';
@@ -31,12 +31,30 @@ const renderFrameUnsolvedRubik = async (res, rubik)=>{
         postUrl: `${process.env.FC_DOMAIN}/frame/rubik/run`,
         buttons: [
             { text: "Run" },
-            // { text: "x - rotate ↑" },
-            // { text: "y - rotate ←" },
-            // { text: "x - rotate ↻" },
+            { text: "x (↑)"},
+            { text: "y (←)"},
+            { text: "x (↻)"},
         ],
         input: { placeholder: "Singmaster Notation" }
       });
+}
+
+const createRubikMove = async({req, moveNotation,session, rubik, updateSessionState})=>{
+    const beforeState = rubik.toString();
+    const valid = rubik.move(moveNotation);
+    if(valid){
+        await Move.create({
+            sessionId:session.session_id,
+            moveNotation:moveNotation,
+            fromState:beforeState,
+            toState:rubik.toString(),
+            moveTimestamp:req.fc.neynar.postData.action.timestamp
+        });
+    }
+
+    if(updateSessionState){
+        await Session.updateCurrentState(session.session_id,rubik.toString());
+    }
 }
 
 export const startSession = async (req, res, next) => {
@@ -51,21 +69,18 @@ export const startSession = async (req, res, next) => {
 
 export const runMove = async (req, res, next) => {
     try {
+        const buttonIndex = req.fc.neynar.postData.action.tapped_button.index;
         let {session, rubik} = await getOrCreateRubikSession(req);
-        if (req.fc.neynar.postData.action.tapped_button.index === 1) {
+        if (buttonIndex === 1) {
             const moves = req.fc.neynar.postData.action.input.text.trim().split(" ").map(v => v.trim());
             for(let i=0;i<moves.length;i++){
-                const beforeState = rubik.toString();
-                const valid = rubik.move(moves[i]);
-                if(valid){
-                    await Move.create({
-                        sessionId:session.session_id,
-                        moveNotation:moves[i],
-                        fromState:beforeState,
-                        toState:rubik.toString(),
-                        moveTimestamp:req.fc.neynar.postData.action.timestamp
-                    });
-                }
+                await createRubikMove({
+                    req:req,
+                    moveNotation:moves[i],
+                    session:session,
+                    rubik:rubik,
+                    updateSessionState:false
+                });
             }
 
             await Session.updateCurrentState(session.session_id,rubik.toString());
@@ -77,7 +92,7 @@ export const runMove = async (req, res, next) => {
                     //belum claim
                     renderFrame(res, {
                         image: `${process.env.FC_DOMAIN}/images/alert-congrat.png`,
-                        postUrl: `${process.env.FC_DOMAIN}/frame/rubik/claim/${Session.session_id}`,
+                        postUrl: `${process.env.FC_DOMAIN}/frame/rubik/claim/${session.session_id}`,
                         buttons: [
                             { text: "Claim Reward" },
                         ]
@@ -92,6 +107,36 @@ export const runMove = async (req, res, next) => {
                         ]
                     });
                 }
+            }
+        }else if([2,3,4].includes(buttonIndex)){
+            switch(buttonIndex){
+                case 2:
+                    await createRubikMove({
+                        req:req,
+                        moveNotation:'x',
+                        session:session,
+                        rubik:rubik,
+                        updateSessionState:true
+                    });
+                    break;
+                case 3:
+                    await createRubikMove({
+                        req:req,
+                        moveNotation:'y',
+                        session:session,
+                        rubik:rubik,
+                        updateSessionState:true
+                    });
+                    break;
+                case 4:
+                    await createRubikMove({
+                        req:req,
+                        moveNotation:'z',
+                        session:session,
+                        rubik:rubik,
+                        updateSessionState:true
+                    });
+                    break;
             }
         }
     } catch (error) {
@@ -118,13 +163,13 @@ export const claim = async (req, res, next) => {
 
         await WelcomeAirdrop.create({
             fid:req.fc.neynar.postData.fid,
-            token:token,
-            amount:10000,
+            token:token.ticker,
+            amount:token.amount,
             address:to,
             session_id:id
         });
 
-        sendErc20(token, to, "10000");
+        sendErc20(token.ticker, to, token.amount);
 
         renderFrame(res, {
             image: `${process.env.FC_DOMAIN}/images/alert-claim.png`,
