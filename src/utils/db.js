@@ -2,7 +2,7 @@ import knex from 'knex';
 
 const db = knex({
   client: 'postgres',
-  connection: process.env.FC_DATABASE_URL,
+  connection: process.env.DATABASE_URL,
   pool: { min: 0, max: 80 },
 });
 

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "dotenv -e .env -- nodemon --loader esm-module-alias/loader framecube.js",
-    "start:live": "dotenv -e .env.production -- node --loader esm-module-alias/loader framecube.js",
+    "start:live": "node --loader ./node_modules/esm-module-alias/loader.mjs framecube.js",
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules --loader esm-module-alias/loader' dotenv -e .env jest",
     "rubik2png": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/rubik2png.js"
   },
