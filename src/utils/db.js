@@ -68,10 +68,10 @@ const createWelcomeAirdropsTable = async () => {
       table.string('token', 255).notNullable(); // Token name or symbol
       table.integer('amount').notNullable(); // Token amount as an integer
       table.string('address', 42).nullable(); // Blockchain address, now nullable
-      table.integer('session_id').unsigned().notNullable(); // New column for session_id as an unsigned integer
+      table.integer('session_id').unsigned().nullable(); // New column for session_id as an unsigned integer
 
       table.foreign('fid').references('users.fid'); // Foreign key relationship to the 'users' table
-      table.foreign('session_id').references('sessions.session_id'); // Foreign key relationship to the 'sessions' table
+      table.foreign('session_id').references('sessions.session_id').onDelete('SET NULL');; // Foreign key relationship to the 'sessions' table
     });
     console.log('Table welcome_airdrops created');
   } else {
