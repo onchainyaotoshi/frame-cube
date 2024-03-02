@@ -1,18 +1,17 @@
-modules = ["nodejs-20:v8-20230920-bd784b9"]
 hidden = [".config", "package-lock.json"]
-run = "npm run start:live"
+run = "xvfb-run --auto-servernum --server-num=1 -s \"-ac -screen 0 640x480x24\" npm run start:live"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [nix]
-channel = "stable-23_05"
+channel = "stable-23_11"
 
 [unitTest]
 language = "nodejs"
 
 [deployment]
-run = ["sh", "-c", "npm run start:live"]
+run = ["sh", "-c", "xvfb-run -s \"-ac -screen 0 1280x1024x24\" npm run start:live"] #https://github.com/stackgl/headless-gl#readme
 deploymentTarget = "cloudrun"
 ignorePorts = false
 
