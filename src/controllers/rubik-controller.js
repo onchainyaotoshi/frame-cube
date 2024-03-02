@@ -11,6 +11,8 @@ import {renderFrameHome} from '@controllers/frame-controller.js';
 const getOrCreateRubikSession = async(req)=>{
     await User.createIfNotExists(req.fc.neynar.postData.fid);
     let session = await Session.findActiveByFid(req.fc.neynar.postData.fid);
+    let fastestSolveTime = await Session.getShortestSolveTime(req.fc.neynar.postData.fid);
+                
     let rubik;
     if(!session){
         rubik = new Rubik();
@@ -23,7 +25,7 @@ const getOrCreateRubikSession = async(req)=>{
         rubik = new Rubik(session.current_state);
     }
 
-    return {session,rubik}
+    return {session,rubik, fastestSolveTime}
 }
 
 const renderFrameUnsolvedRubik = async (res, rubik)=>{
@@ -71,7 +73,7 @@ export const startSession = async (req, res, next) => {
 export const runMove = async (req, res, next) => {
     try {
         const buttonIndex = req.fc.neynar.postData.action.tapped_button.index;
-        let {session, rubik} = await getOrCreateRubikSession(req);
+        let {session, rubik, fastestSolveTime} = await getOrCreateRubikSession(req);
         if (buttonIndex === 1) {
             const commands = req.fc.neynar.postData.action.input.text.trim();
             if(commands.toLowerCase() == 'home'){
@@ -99,10 +101,9 @@ export const runMove = async (req, res, next) => {
                 let claimed = true;
                 await Session.markSessionAsCompleted(session.session_id,req.fc.neynar.postData.action.timestamp);
                 const duration = await Session.getSolveTime(session.session_id);
-                const myFastestDuration = await Session.getShortestSolveTime(req.fc.neynar.postData.fid);
-                if(myFastestDuration == null){
+                if(fastestSolveTime == null){
                     claimed = false;
-                }else if(parseInt(duration) < parseInt(myFastestDuration)){
+                }else if(parseInt(duration) < parseInt(fastestSolveTime)){
                     claimed = false;
                 }
 
@@ -122,7 +123,7 @@ export const runMove = async (req, res, next) => {
                         image: await req.fc.textToImage(`
                         Congratulations on solving the Rubik's Cube \n\n ${pretty(parseInt(duration))}!\n
                         You can claim the rewards, if:\n\n current solve time < fastest solve time record.\n
-                        Your fastest solve time is ${pretty(parseInt(myFastestDuration))}
+                        Your fastest solve time is ${pretty(parseInt(fastestSolveTime))}
                         `), 
                         postUrl: `${process.env.FC_DOMAIN}/frame/rubik/start`,
                         buttons: [

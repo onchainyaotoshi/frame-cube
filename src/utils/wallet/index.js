@@ -15,6 +15,7 @@ const SMART_CONTRACT = {
     "frame": { ticker: 'frame',abi: frame, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567', amount: 10000 }
 };
 
+
 if(isLive()){
     delete SMART_CONTRACT.test;
 }else{
