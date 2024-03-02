@@ -15,6 +15,7 @@
   
     #for gl
     pkgs.mesa
+    pkgs.libGL
     pkgs.libGLU
     pkgs.glew
     pkgs.xorg.libXi
