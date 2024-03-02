@@ -15,7 +15,7 @@ export default class Rubik{
                 scrambleLength = totalScrambleMove;
             }
             this._state = new CubeState();
-            this._state.scramble(1);
+            this._state.scramble(scrambleLength);
         }
     }
 
