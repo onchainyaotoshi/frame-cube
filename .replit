@@ -1,5 +1,7 @@
 hidden = [".config", "package-lock.json"]
-run = "xvfb-run --auto-servernum --server-num=1 -s \"-ac -screen 0 640x480x24\" npm run start:live"
+run = "npm run start:live"
+
+onBoot = "export DISPLAY=:99.0 && xvfb-run --server-args=\"-screen 0 1024x768x16\""
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
@@ -11,10 +13,12 @@ channel = "stable-23_11"
 language = "nodejs"
 
 [deployment]
-run = ["sh", "-c", "xvfb-run -s \"-ac -screen 0 1280x1024x24\" npm run start:live"] #https://github.com/stackgl/headless-gl#readme
+run = ["sh", "-c", "npm run start:live"] 
 deploymentTarget = "cloudrun"
 ignorePorts = false
 
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+

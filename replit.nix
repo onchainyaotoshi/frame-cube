@@ -1,11 +1,13 @@
 { pkgs }: {
+  
   deps = [
+      pkgs.vim-full
+      pkgs.pciutils
     pkgs.postgresql
-    pkgs.nodejs_18
+    pkgs.nodejs_20
     pkgs.python310Full
 
     #for node-gyp (build-essential)
-    pkgs.stdenv.cc.cc
     pkgs.gcc
     pkgs.gnumake
 
@@ -13,14 +15,11 @@
     pkgs.pkg-config
     pkgs.xvfb-run
   
-    #for gl
+    #for gl node-gyp build
     pkgs.mesa
-    pkgs.libGL
-    pkgs.libGLU
-    pkgs.glew
-    pkgs.xorg.libXi
-    pkgs.xorg.libX11
-    pkgs.xorg.libXext
+    pkgs.mesa-demos
+
+    #for fix couldn't find RGB GLX visual or fbconfig when run this shell command: xvfb-run --auto-servernum -s "-ac -screen 0 1024x768x24" glxinfo
 
     #for canvas 
     pkgs.cairo
@@ -30,6 +29,7 @@
     pkgs.librsvg
     pkgs.libuuid
     pkgs.binutils
+    
     # Add other dependencies here
   ];
 
