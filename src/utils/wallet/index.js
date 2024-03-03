@@ -1,18 +1,24 @@
 import { ethers } from 'ethers';
 import { Core } from '@quicknode/sdk';
 import { baseSepolia, base } from 'viem/chains'; // Change the network as needed
-import { createWalletClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import frame from '@utils/wallet/abi/frame.json' assert { type: 'json' };
-import toshi from '@utils/wallet/abi/toshi.json' assert { type: 'json' };
-import test from '@utils/wallet/abi/test.json' assert { type: 'json' };
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import {loadJsonFile} from 'load-json-file';
 
 import {isLive} from '@utils/dev-tools.js';
 
+import path from 'path';
+import { createPathContext } from '@utils/path-resolver.js';
+const { resolvePath } = createPathContext(import.meta.url);
+
+const TEST = await loadJsonFile(resolvePath(path.join('abi','test.json')));
+const TOSHI = await loadJsonFile(resolvePath(path.join('abi','toshi.json')));
+const FRAME = await loadJsonFile(resolvePath(path.join('abi','frame.json')));
+
 const SMART_CONTRACT = {
-    "test": { ticker: 'test', abi: test, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54', amount:100 },
-    "toshi": { ticker: 'toshi', abi: toshi, address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4', amount: 100},
-    "frame": { ticker: 'frame',abi: frame, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567', amount: 10000 }
+    "test": { ticker: 'test', abi: TEST, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54', amount:100 },
+    "toshi": { ticker: 'toshi', abi: TOSHI, address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4', amount: 100},
+    "frame": { ticker: 'frame',abi: FRAME, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567', amount: 10000 }
 };
 
 

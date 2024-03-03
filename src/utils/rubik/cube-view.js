@@ -1,5 +1,4 @@
-// import * as THREE from 'three';
-import * as THREE from '@utils/rubik/test.js';
+import * as THREE from 'three';
 import createGL  from 'gl';
 import { PNG } from 'pngjs';
 import CubeStateToView from '@utils/rubik/cube-state-to-view.js';
@@ -20,25 +19,23 @@ class CubeView {
     const width = 1000;
     const height = Math.round(1000 / 1.91); // Example dimensions, adjust as needed
     
-    // const webGLContext  = createGL(width, height); // Adjusted width and height for the desired aspect ratio
+    const webGLContext  = createGL(width, height); // Adjusted width and height for the desired aspect ratio
 
     // // this dummy is required to prevent WebGLRenderer throw errors, since nodejs doesn't fully support canvas
-    // const dummyCanvas = {
-    //   width: width,
-    //   height: height,
-    //   addEventListener: () => {}, // No-op function for addEventListener
-    //   removeEventListener: () => {}, // No-op function for removeEventListener
-    //   getContext: () => { return webGLContext; }, // Return the WebGL context from 'gl'
-    //   style: {}, // Add an empty 'style' object
-    // };
+    const dummyCanvas = {
+      width: width,
+      height: height,
+      addEventListener: () => {}, // No-op function for addEventListener
+      removeEventListener: () => {}, // No-op function for removeEventListener
+      getContext: () => { return webGLContext; }, // Return the WebGL context from 'gl'
+      style: {}, // Add an empty 'style' object
+    };
 
-    // this.renderer = new THREE.WebGLRenderer({
-    //   context: webGLContext,
-    //   canvas: dummyCanvas
-    // });
-    this.renderer = new THREE.WebGLRenderer()
+    this.renderer = new THREE.WebGLRenderer({
+      context: webGLContext,
+      canvas: dummyCanvas
+    });
     this.renderer.setSize(width, height);
-    document.body.appendChild( renderer.domElement );
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(50, width / height, 1, 1000);
