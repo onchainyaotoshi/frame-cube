@@ -9,6 +9,11 @@ RUN apt-get update && apt-get install -y \
     libglapi-mesa \
     libosmesa6
 
+# Copy your application files
+COPY . /frame-cube
+
+WORKDIR /app
+
 # Set up environment variables
 ENV DISPLAY=:99.0
 
