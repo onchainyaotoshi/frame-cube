@@ -8,14 +8,14 @@
   },
   "type": "module",
   "scripts": {
-    "start": "dotenv -e .env -- node --loader esm-module-alias/loader framecube.js",
-    "start:live": "node --loader esm-module-alias/loader framecube.js",
-    "rubik2png": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/rubik2png.js",
-    "rubik2png:live": "node --loader esm-module-alias/loader ./scripts/rubik2png.js",
-    "install-db": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/install-db.js",
-    "install-db:live": "node --loader esm-module-alias/loader ./scripts/install-db.js",
-    "check-gl": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/check-gl.js",
-    "check-gl:live": "node --loader esm-module-alias/loader ./scripts/check-gl.js"
+    "start": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs framecube.js",
+    "start:live": "node --loader ./node_modules/esm-module-alias/loader.mjs framecube.js",
+    "rubik2png": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/rubik2png.js",
+    "rubik2png:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/rubik2png.js",
+    "install-db": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/install-db.js",
+    "install-db:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/install-db.js",
+    "check-gl": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js",
+    "check-gl:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js"
   },
   "author": "framecube",
   "license": "MIT",
