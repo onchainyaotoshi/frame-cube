@@ -4,7 +4,7 @@
   "description": "",
   "main": "framecube.js",
   "engines": {
-    "node": "16.x"
+    "node": "16.4.2"
   },
   "type": "module",
   "scripts": {
