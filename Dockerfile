@@ -1,5 +1,6 @@
 # Use a Node.js base image
 FROM node:16.4.2
+WORKDIR /app
 
 # Install necessary Linux packages
 RUN apt-get update && apt-get install -y \
