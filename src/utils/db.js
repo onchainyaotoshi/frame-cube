@@ -79,12 +79,30 @@ const createWelcomeAirdropsTable = async () => {
   }
 };
 
+const createSmartContractsTable = async () => {
+  const exists = await db.schema.hasTable('smart_contracts');
+  if (!exists) {
+    await db.schema.createTable('smart_contracts', (table) => {
+      table.increments('id').primary();
+      table.string('ticker').notNullable();
+      table.json('abi').notNullable();
+      table.string('address', 42).notNullable(); // Assuming Ethereum addresses which are 42 characters long including the '0x'
+      table.integer('amount').notNullable();
+      table.enu('status', ['active', 'inactive']).defaultTo('active').notNullable();
+    });
+    console.log('Table smart_contracts created');
+  } else {
+    console.log('Table smart_contracts already exists');
+  }
+};
+
 
 export const initialize = async()=>{
   await createUsersTable();
   await createSessionsTable();
   await createMovesTable();
   await createWelcomeAirdropsTable();
+  await createSmartContractsTable();
 }
 
 export default db;
