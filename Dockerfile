@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     libosmesa6
 
 # Copy your application files
-COPY . .
+COPY . ./app
+
+WORKDIR /app
 
 # Set up environment variables
 ENV DISPLAY=:99.0
