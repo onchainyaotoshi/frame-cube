@@ -6,3 +6,6 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-dri \
     libglapi-mesa \
     libosmesa6
+
+COPY . /app
+WORKDIR /app
