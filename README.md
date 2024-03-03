@@ -15,7 +15,7 @@ The 3x3x3 Rubik's Cube is designed for a Farcaster frame.
 - **b**: Back - Layer opposite Front
 - **l**: Left - Layer on the left side
 - **r**: Right - Layer on the right side
-- **d (or b)**: Down - Bottom layer
+- **d**: Down - Bottom layer
 
 ## Middle Layer Rotation
 - **m**: Middle - Layer between Left and Right
