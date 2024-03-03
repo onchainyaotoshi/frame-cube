@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "start": "dotenv -e .env -- node --loader esm-module-alias/loader framecube.js",
+    "start:live": "node --loader esm-module-alias/loader framecube.js",
     "rubik2png": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/rubik2png.js",
     "install-db": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/install-db.js",
     "check-gl": "dotenv -e .env -- node --loader esm-module-alias/loader ./scripts/check-gl.js"
