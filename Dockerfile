@@ -9,9 +9,14 @@ RUN apt-get update && apt-get install -y \
     libglapi-mesa \
     libosmesa6
 
-# Copy your application files
+# Create a directory for your application
 WORKDIR /app
+
+# Copy your application files into the container
 COPY . .
+
+# Install dependencies
+RUN npm install
 
 # Set up environment variables
 ENV DISPLAY=:99.0
