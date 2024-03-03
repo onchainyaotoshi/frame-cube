@@ -7,8 +7,8 @@ function delay(time) {
 const ctx = createGL(300, 300);
 console.log("ctx",ctx);
 
-await delay(5000);
-throw new Error('finish');
+await delay(2000);
+console.log("finish");
 
 // const {scene, camera} = createScene();
 
