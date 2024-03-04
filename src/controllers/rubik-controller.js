@@ -34,9 +34,9 @@ const renderFrameUnsolvedRubik = async (res, rubik)=>{
         postUrl: `${process.env.FC_DOMAIN}/frame/rubik/run`,
         buttons: [
             { text: "Run" },
-            { text: "x (↑)"},
-            { text: "y (←)"},
-            { text: "x (↻)"},
+            { text: "Guide"},
+            // { text: "y (←)"},
+            // { text: "x (↻)"},
         ],
         input: { placeholder: "Singmaster Notation" }
       });
@@ -134,6 +134,23 @@ export const runMove = async (req, res, next) => {
                 }
             }
         }else if([2,3,4].includes(buttonIndex)){
+            return renderFrame(res, {
+                image: await req.fc.textToImage(`
+                - u: up or top , r: right, l: left, f: front\n
+                - b: back, d: down or bottom\n
+                - q: Counterclockwise turn (e.g., uq for Up layer).\n
+                - w: 180-degree turn (e.g., uw for 2x Up layer).\n
+                - m: Middle (l-r), e: Equatorial (u-d), s: Standing (f-b)\n
+                - x (or y or z): Rotate cube 90° around X, Y, Z\n
+                - reset: scramble, home: return homepage\n
+                - ex: u rq fw -> Up ↻, Right ↺, Front 2x
+                `),
+                postUrl: `${process.env.FC_DOMAIN}/frame/rubik/start`,
+                buttons: [
+                    { text: "Continue"},
+                ]
+            });
+
             switch(buttonIndex){
                 case 2:
                     await createRubikMove({
@@ -185,13 +202,36 @@ export const claim = async (req, res, next) => {
         }
 
         let to = null;
+        let token;
         try{
+            token = await getTokenReward();
             to = req.fc.neynar.postData.action.interactor.verified_addresses.eth_addresses[0];
-        }catch(err){
-            //user dont set his eth address on his farcaster account yet
-        }
 
-        const token = await getTokenReward();
+            if(!to){
+                throw new Error('no verified address found');
+            }
+        }catch(err){
+            await WelcomeAirdrop.create({
+                fid:req.fc.neynar.postData.fid,
+                token:token.ticker,
+                amount:token.amount,
+                address:null,
+                session_id:id
+            });
+
+            //user dont set his eth address on his farcaster account yet
+            return renderFrame(res, {
+                image: await req.fc.textToImage(`
+                Please verify your Farcaster wallet\n\n in the menu settings under 'Verified Addresses'.\n\n
+                After you verified it, \n\nyou can give this session id: \'${id}\' to the dev.
+                `),
+                postUrl: `${process.env.FC_DOMAIN}/frame/rubik/start`,
+                buttons: [
+                    { text: "Play again?" },
+                    { text: "Home", target:`${process.env.FC_DOMAIN}/frame` },
+                ]
+            });
+        }
 
         await WelcomeAirdrop.create({
             fid:req.fc.neynar.postData.fid,

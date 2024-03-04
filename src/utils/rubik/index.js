@@ -1,5 +1,6 @@
 import CubeView from '@utils/rubik/cube-view.js'; // Adjust the path accordingly
 import CubeState from '@utils/rubik/cube-state.js';
+import {isLive} from '@utils/dev-tools.js';
 
 export default class Rubik{
     constructor(state,totalScrambleMove) {
@@ -15,7 +16,8 @@ export default class Rubik{
                 scrambleLength = totalScrambleMove;
             }
             this._state = new CubeState();
-            this._state.scramble(scrambleLength);
+
+            this._state.scramble(isLive() ? scrambleLength : 1);
         }
     }
 
