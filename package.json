@@ -15,10 +15,16 @@
     "install-db": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/install-db.js",
     "install-db:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/install-db.js",
     "check-gl": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js",
-    "check-gl:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js"
+    "check-gl:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js",
+    "commit":"cz"
   },
   "author": "framecube",
   "license": "MIT",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "aliases": {
     "@root": "./src",
     "@models": "./src/models",
@@ -49,7 +55,9 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "commitizen": "^4.3.0",
     "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
     "dotenv-cli": "^7.3.0",
     "nodemon": "^3.1.0"
   }

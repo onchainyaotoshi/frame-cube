@@ -17,8 +17,8 @@ const FRAME = await loadJsonFile(resolvePath(path.join('abi','frame.json')));
 
 const SMART_CONTRACT = {
     "test": { ticker: 'test', abi: TEST, address: '0x443277459cE1D7AE44B6247B4AC4b16C1A3eeB54', amount:100 },
-    "toshi": { ticker: 'toshi', abi: TOSHI, address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4', amount: 100},
-    "frame": { ticker: 'frame',abi: FRAME, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567', amount: 10000 }
+    "toshi": { ticker: 'toshi', abi: TOSHI, address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4', amount: 3450},
+    "frame": { ticker: 'frame',abi: FRAME, address: '0x91F45aa2BdE7393e0AF1CC674FFE75d746b93567', amount: 69000 }
 };
 
 
