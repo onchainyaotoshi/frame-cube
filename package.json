@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs framecube.js",
+    "start": "dotenv -e .env -- nodemon --loader ./node_modules/esm-module-alias/loader.mjs framecube.js",
     "start:live": "node --loader ./node_modules/esm-module-alias/loader.mjs framecube.js",
     "rubik2png": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/rubik2png.js",
     "rubik2png:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/rubik2png.js",
