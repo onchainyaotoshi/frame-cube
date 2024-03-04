@@ -262,10 +262,11 @@ export const claim = async (req, res, next) => {
 export const leaderboard = async(req,res,next)=>{
     try{
         const data = await Session.getLeaderboard(8);
+        const total = await Session.getTotalPlayerByStatus('completed');
         // console.log(data);//[{ fid: '282770', session_id: 1, duration_seconds: '1008' }]
 
         let html = `
-        Top 8 Fastest Solves Leaderboard:\n
+        Top 8 Fastest Solves Leaderboard From ${total}:\n
         `
 
         for(let i=0;i<data.length;i++){

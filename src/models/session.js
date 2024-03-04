@@ -104,5 +104,13 @@ export default class Session {
       .where({ session_id: sessionId, status: 'active' })
       .del(); // Use the delete operation provided by your database querying library
   }
+
+  static async getTotalPlayerByStatus(status) {
+    return db(this.tableName)
+      .where({ status })
+      .count({ total_players: 'session_id' }) // Using 'session_id' as it's the primary key
+      .first()
+      .then(result => result ? parseInt(result.total_players) : 0); // Convert string count to integer and return
+  }
 }
 
