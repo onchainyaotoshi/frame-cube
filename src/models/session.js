@@ -108,7 +108,7 @@ export default class Session {
   static async getTotalPlayerByStatus(status) {
     return db(this.tableName)
       .where({ status })
-      .count({ total_players: 'session_id' }) // Using 'session_id' as it's the primary key
+      .count({ total_players: 'fid' }) // Using 'session_id' as it's the primary key
       .first()
       .then(result => result ? parseInt(result.total_players) : 0); // Convert string count to integer and return
   }
