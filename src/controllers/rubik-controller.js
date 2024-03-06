@@ -263,9 +263,11 @@ export const leaderboard = async(req,res,next)=>{
     try{
         const data = await Session.getLeaderboard(8);
         const total = await Session.getTotalPlayerByStatus('completed');
+        const totalUsers = await User.count();
         // console.log(data);//[{ fid: '282770', session_id: 1, duration_seconds: '1008' }]
 
         let html = `
+        Total Unique Players: ${totalUsers}\n
         Top 8 Fastest Solves Leaderboard From ${total}:\n
         `
 

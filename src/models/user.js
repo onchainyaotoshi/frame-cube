@@ -21,4 +21,9 @@ export default class User {
         // User already exists, return the existing user
         return user;
     }
+
+    static async count() {
+        const result = await db(this.tableName).count('* as total');
+        return parseInt(result[0].total, 10);
+    }
 }
