@@ -7,10 +7,14 @@ import { fcNamespace } from '@middlewares/fc-namespace.js';
 import { errorHandler } from '@middlewares/error-handler.js';
 import { neynar } from '@middlewares/neynar.js';
 
+import cors from 'cors';
+
 import { createPathContext } from '@utils/path-resolver.js';
 const { resolvePath } = createPathContext(import.meta.url);
 
 const app = express();
+// Enable CORS for all routes
+app.use(cors());
 
 app.set('view engine', 'ejs');
 app.set('views', resolvePath('views'));

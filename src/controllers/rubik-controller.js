@@ -35,7 +35,7 @@ const renderFrameUnsolvedRubik = async (res, rubik)=>{
         buttons: [
             { text: "Run" },
             { text: "Guide"},
-            // { text: "y (←)"},
+            { text: "Home"},
             // { text: "x (↻)"},
         ],
         input: { placeholder: "Singmaster Notation" }
@@ -133,7 +133,7 @@ export const runMove = async (req, res, next) => {
                     });
                 }
             }
-        }else if([2,3,4].includes(buttonIndex)){
+        }else if([2].includes(buttonIndex)){
             return renderFrame(res, {
                 image: await req.fc.textToImage(`
                 - u: up or top , r: right, l: left, f: front\n
@@ -185,6 +185,8 @@ export const runMove = async (req, res, next) => {
             }
 
             renderFrameUnsolvedRubik(res, rubik);
+        }else if(buttonIndex == 3){
+            return renderFrameHome(res);
         }else{
             next(new Error('invalid button index'));
         }

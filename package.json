@@ -16,7 +16,7 @@
     "install-db:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/install-db.js",
     "check-gl": "dotenv -e .env -- node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js",
     "check-gl:live": "node --loader ./node_modules/esm-module-alias/loader.mjs ./scripts/check-gl.js",
-    "commit":"cz"
+    "commit": "cz"
   },
   "author": "framecube",
   "license": "MIT",
@@ -39,6 +39,7 @@
     "@ngrok/ngrok": "^1.1.0",
     "@quicknode/sdk": "github:onchainyaotoshi/quicknode-sdk",
     "canvas": "^2.11.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
     "esm-module-alias": "^2.1.0",
